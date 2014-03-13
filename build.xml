@@ -1,0 +1,115 @@
+<?xml version="1.0" ?>
+<!-- This is an Apache Ant build file. -->
+<project default="run">
+	
+	<!--
+		$Id$
+		
+		The class path consists of the lib directory and any _immediate_ subdirectories.
+		Required dependency (unpack these into lib/):
+		
+		- GeoTools 9.0 (no other versions tested)
+		  http://www.geotools.org/
+		  NB: manual EPSG Authority management required!
+		  (for example, delete all gt-epsg-*.jar except gt-epsg-hsql-8.5.jar)
+		
+	-->
+	<path id="libsRef">
+<!-- we include these files with our dist instead of just linking to them -->
+		<fileset dir="Resources/lib">
+			<include name="*.jar"/>
+			<include name="*/*.jar"/>
+		</fileset>
+	</path>
+	
+	
+	
+	<target name="build">
+		<mkdir dir="build/classes"/>
+		
+		<javac srcdir="src" encoding="UTF-8" destdir="build/classes" debuglevel="lines,vars,source" classpathref="libsRef" includeantruntime="false" debug="true" source="1.5" target="1.5">
+			<compilerarg value="-Xlint:unchecked"/>
+			<compilerarg value="-Xlint:deprecation"/>
+		</javac>
+		
+	</target>
+	
+	
+	
+	<target name="package" depends="build">
+		<mkdir dir="build/package"/>
+		<copy todir="build/package">
+			<fileset dir="build/classes" includes="**/*"/>
+			<fileset dir="Resources" includes="au/**/*"/>
+			<fileset dir="Resources" includes="logo.gif"/>
+			<fileset dir="Resources" includes="winicon.png"/>
+		</copy>
+			<jar destfile="build/SKGB-offline.jar" basedir="build/package" compress="false">
+			<manifest>
+				<attribute name="Main-Class" value="Gui"/>
+				<!--attribute name="Class-Path" value="lib/geotools-8.5/*"/-->
+			</manifest>
+		</jar>
+		<delete quiet="true" includeemptydirs="true">
+			<fileset dir="build/package"/>
+		</delete>
+	</target>
+	
+	
+	
+<!--
+	<target name="doc">
+		<mkdir dir="build/doc"/>
+		<javadoc sourcepath="src" destdir="build/doc" classpathref="libsRef" access="package" Encoding="UTF-8" docencoding="UTF-8" charset="UTF-8" Version="true" Use="true" Author="true">
+			<link href="http://docs.oracle.com/javase/6/docs/api/"/>
+			<link href="http://tsusiatsoftware.net/jts/javadoc/"/>
+			<link href="http://docs.geotools.org/latest/javadocs/"/>
+		</javadoc>
+	</target>
+-->
+	
+	
+	
+	<target name="clean">
+		<delete dir="build"/>
+	</target>
+	
+	
+	
+	<target name="run" depends="package">
+		<java jar="build/SKGB-offline.jar" fork="true"/>
+	</target>
+	
+	
+	
+<!--
+	<taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="libsRef"/>
+	
+	<target name="build-tests" depends="build">
+		<mkdir dir="build/classes"/>
+    	
+		<javac srcdir="test" destdir="build/classes" debuglevel="lines,vars,source" classpathref="libsRef" includeantruntime="false" debug="true" source="1.5" target="1.5">
+			<compilerarg value="-Xlint:unchecked"/>
+			<compilerarg value="-Xlint:deprecation"/>
+		</javac>
+    	
+    </target>
+	
+	<target name="test" depends="build-tests">
+		<testng outputdir="build/test-report">
+			<classpath>
+				<pathelement path="build/classes"/>
+				<path refid="libsRef"/>
+			</classpath>
+			<xmlfileset dir="test" includes="*.xml"/>
+		</testng>
+	</target>
+	
+	<target name="cleantest" depends="clean, test" />
+-->
+	
+	
+	
+	<target name="all" depends="clean, build, package" />
+	
+</project>

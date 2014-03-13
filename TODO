@@ -1,0 +1,20 @@
+﻿- properties
+- speicherort
+- falls nicht existent, lokaler pfad im selben ordner
+- mac-gui, menü, v. a. close
+- about-box (evtl. über klick auf stander auch in windows?)
+- bundle
+- kann aufs bundle verzichtet und alle details ins jar eingebaut werden?
+- app icon mac
+- doku
++ default-pfad für mandatsstore etc.
+- MandateStore-konstruktor überarbieten, insb. parsen der signature
+- polishing, allgemein
+
+- weg finden, die pruefsumme "einfach" zu erzeugen (modifier-klick waere vielleicht gut)
+- gutes error-handling (kein crash bei fehlern in der eingabedatei, leeren feldern, fehlenden mandaten etc)
+
+Bugs in 0.1:
+- beim oeffnen in windows erscheint warnung "von dritten veraendert", waehrend beim oeffnen in os x "ok" erscheint
+- umlautheader gruendlich testen!
+- output genau pruefen!
