@@ -1,5 +1,7 @@
 // $Id$
 
+//package de.skgb.offline.gui;
+
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -7,8 +9,18 @@ import java.io.File;
 import java.io.IOException;
 
 
+/**
+ * The main class for running this app as GUI. This is a controller class,
+ * intended to only contain glue code.
+ */
 class Gui implements ActionListener {
 	
+	/**
+	 * The GUI version of this app. Note that this version number does not
+	 * necessarily reflect updates to the backend in the de.skgb.offline
+	 * package. At some point this field should be moved over there so that
+	 * we have a grand unified version number for the whole project.
+	 */
 	static final String version = "0.1";
 	
 	SkgbOffline app;

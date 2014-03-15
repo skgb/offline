@@ -1,4 +1,6 @@
-// $Id: $
+// $Id$
+
+//package de.skgb.offline.gui;
 
 
 import java.awt.Frame;
@@ -18,6 +20,9 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 
+/**
+ * The app's main window, including all widgets and minimal glue code.
+ */
 class GuiWindow extends Frame implements Runnable {
 	
 //	static int titlebarHeight = 22;  // Mac OS X 10.6

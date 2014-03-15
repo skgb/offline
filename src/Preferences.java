@@ -1,4 +1,6 @@
-// $Id: $
+// $Id$
+
+//package de.skgb.offline.gui;
 
 
 import java.io.File;
