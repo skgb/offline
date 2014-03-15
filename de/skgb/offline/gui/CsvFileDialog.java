@@ -1,6 +1,6 @@
 // $Id$
 
-//package de.skgb.offline.gui;
+package de.skgb.offline.gui;
 
 
 import java.awt.Frame;

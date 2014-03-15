@@ -1,7 +1,11 @@
 // $Id$
 
-//package de.skgb.offline.gui;
+package de.skgb.offline.gui;
 
+
+import de.skgb.offline.MandateStore;
+
+import de.thaw.java.AWTImageView;
 
 import java.awt.Frame;
 import java.awt.Dimension;

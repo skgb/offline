@@ -1,11 +1,13 @@
-// $Id: $
+// $Id$
 
 
 // javac -cp lib/opencsv-2.3.jar -encoding UTF-8 Main.java
 // java -cp lib/opencsv-2.3.jar:. Main
 
-//package de.skgb.offline.cli;
+package de.skgb.offline.cli;
 
+
+import de.skgb.offline.SkgbOffline;
 
 import java.io.IOException;
 import java.io.File;

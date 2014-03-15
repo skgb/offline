@@ -1,6 +1,6 @@
 // $Id$
 
-//package de.thaw.java;
+package de.thaw.java;
 
 import java.awt.Dimension;
 import java.awt.Image;

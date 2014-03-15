@@ -1,6 +1,6 @@
 // $Id$
 
-//package de.skgb.offline;
+package de.skgb.offline;
 
 
 import java.io.BufferedReader;
@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,11 +20,6 @@ import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import javax.xml.bind.DatatypeConverter;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -114,65 +108,7 @@ final class Mandate {
 }
 
 
-final class MandateStore {
-	
-	final String updated;
-	
-	final boolean hashMissing;
-	
-	final boolean hashMatches;
-	
-	final String hashBase64;
-	
-	final Collection<Mandate> mandates;
-	
-	MandateStore (final MutableCsvFile csvFile) {
-		final Collection<Mandate> mandates = new ArrayList<Mandate>( csvFile.data.size() );
-		for (final Map<String, String> row : csvFile.data) {
-			mandates.add( new Mandate(row) );
-		}
-		this.mandates = Collections.unmodifiableCollection(mandates);
-		
-		final String signature = csvFile.header.get(csvFile.header.size() - 1);
-		final Matcher regex = Pattern.compile(".*updated ([0-9]{4}-(?:0[1-9]|1[012])-(?:0[1-9]|[12][0-9]|3[01])).*").matcher(signature);
-		if (regex.matches()) {
-			updated = regex.group(1);
-		}
-		else {
-			updated = null;
-		}
-		
-		final Matcher regex2 = Pattern.compile(".*[A-Za-z0-9+/]{22}==.*").matcher(signature);
-		hashMissing = ! regex2.matches();
-		
-		final StringBuilder hashBuilder = new StringBuilder();
-		for (final Map<String, String> row : csvFile.data) {
-			for (final String cell : row.values()) {
-				hashBuilder.append(cell);
-			}
-		}
-		hashBuilder.append(String.valueOf( this.updated ));
-		try {
-			final byte[] hash = MessageDigest.getInstance("MD5").digest( hashBuilder.toString().getBytes() );
-			hashBase64 = DatatypeConverter.printBase64Binary(hash);
-		}
-		catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-		hashMatches = signature.endsWith( hashBase64 );
-	}
-	
-	Mandate byReference (final String reference) {
-		for (final Mandate mandate : mandates) {
-			if ( reference.equals(mandate.uniqueReference()) ) {
-				return mandate;
-			}
-		}
-		return null;
-	}
-}
-
-final class SkgbOffline {
+public final class SkgbOffline {
 	
 	final static String creditorId = "DE67SEG00000074132";
 	
@@ -191,11 +127,11 @@ final class SkgbOffline {
 		debitHeader.put("signatureDate", "Mandatsdatum");
 	}
 	
-	final MandateStore mandateStore;
+	public final MandateStore mandateStore;
 	
-	final File mandateFile;
+	public final File mandateFile;
 	
-	SkgbOffline (final File mandateFile) throws IOException {
+	public SkgbOffline (final File mandateFile) throws IOException {
 		this.mandateFile = mandateFile;
 		mandateStore = new MandateStore( MutableCsvFile.read(mandateFile) );
 //		System.out.println(mandateStore.hashMissing);
@@ -204,7 +140,7 @@ final class SkgbOffline {
 //		System.out.println(mandateStore.updated);
 	}
 	
-	void process (final File inFile, final File outFile) throws IOException {
+	public void process (final File inFile, final File outFile) throws IOException {
 		merge( MutableCsvFile.read(inFile) ).write(outFile);
 	}
 	

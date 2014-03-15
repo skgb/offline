@@ -1,7 +1,9 @@
 // $Id$
 
-//package de.skgb.offline.gui;
+package de.skgb.offline.gui;
 
+
+import de.skgb.offline.SkgbOffline;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
