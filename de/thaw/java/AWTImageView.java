@@ -18,7 +18,10 @@ import javax.imageio.ImageIO;
  */
 public class AWTImageView extends Panel { 
 	
+	
+	/** The image to be displayed by this panel. */
 	public Image image;
+	
 	
 	/**
 	 * A new instance backed by the specified image.
@@ -27,6 +30,7 @@ public class AWTImageView extends Panel {
 	public AWTImageView (final Image image) {
 		this.image = image;
 	}
+	
 	
 	/**
 	 * A new instance backed by the image specified by the given system
@@ -39,6 +43,7 @@ public class AWTImageView extends Panel {
 	public AWTImageView (final String resourceName) {
 		this( readImage(resourceName) );
 	}
+	
 	
 	static Image readImage (final String resourceName) {
 		try {
@@ -54,6 +59,7 @@ public class AWTImageView extends Panel {
 		return null;
 	}
 	
+	
 	@Override
 	public void paint (final Graphics g) {
 		super.paint(g);
@@ -62,6 +68,7 @@ public class AWTImageView extends Panel {
 		}
 	}
 	
+	
 	@Override
 	public Dimension getPreferredSize() {
 		if (image == null) {
@@ -69,4 +76,5 @@ public class AWTImageView extends Panel {
 		}
 		return new Dimension(image.getWidth(this), image.getHeight(this));
 	}
+	
 }

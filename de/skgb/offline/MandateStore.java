@@ -14,18 +14,35 @@ import java.security.NoSuchAlgorithmException;
 import javax.xml.bind.DatatypeConverter;
 
 
+/**
+ * A collection of Mandates, initialised from a mandate store data table.
+ * Instances of this class are immutable.
+ */
 public final class MandateStore {
 	
+	
+	/** The date on which the mandate store was created; null if unkown. */
 	public final String updated;
 	
+	/** true if the signature hash was missing. */
 	public final boolean hashMissing;
 	
+	/** true if the signature hash was found and matches the one calculated from the actual data. */
 	public final boolean hashMatches;
 	
+	/** The signature hash as calculated from the actual data. */
 	final String hashBase64;
 	
+	/** The list of mandates. */
 	final Collection<Mandate> mandates;
 	
+	
+	/**
+	 * Initialises this mandate store from a mandate store table in CSV format.
+	 * @param csvFile the CSV table file to read the mandate store data from;
+	 *  the given MutableCsvFile instance is no longer needed after this
+	 *  MandateStore instance is constructed
+	 */
 	MandateStore (final MutableCsvFile csvFile) {
 		final Collection<Mandate> mandates = new ArrayList<Mandate>( csvFile.data.size() );
 		for (final Map<String, String> row : csvFile.data) {
@@ -57,12 +74,20 @@ public final class MandateStore {
 			hashBase64 = DatatypeConverter.printBase64Binary(hash);
 		}
 		catch (NoSuchAlgorithmException e) {
+			// this shouldn't happen as the MD5 algorithm is supposed to be built-in
 			throw new RuntimeException(e);
 		}
 		hashMatches = signature.endsWith( hashBase64 );
 	}
 	
+	
+	/**
+	 * Finds and retrieves a single Mandate from the store.
+	 * @param reference the unique mandate reference of the mandate to search for
+	 * @return null if the mandate is not in the store
+	 */
 	Mandate byReference (final String reference) {
+		// we don't have that many mandates => sequential search
 		for (final Mandate mandate : mandates) {
 			if ( reference.equals(mandate.uniqueReference()) ) {
 				return mandate;

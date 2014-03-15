@@ -4,23 +4,7 @@
 	
 	<!--
 		$Id$
-		
-		The class path consists of the lib directory and any _immediate_ subdirectories.
-		Required dependency (unpack these into lib/):
-		
-		- GeoTools 9.0 (no other versions tested)
-		  http://www.geotools.org/
-		  NB: manual EPSG Authority management required!
-		  (for example, delete all gt-epsg-*.jar except gt-epsg-hsql-8.5.jar)
-		
 	-->
-	<path id="libsRef">
-<!-- we include these files with our dist instead of just linking to them -->
-		<!--fileset dir="Resources/lib">
-			<include name="*.jar"/>
-			<include name="*/*.jar"/>
-		</fileset-->
-	</path>
 	
 	
 	
@@ -30,7 +14,7 @@
 			<fileset dir="Resources" includes="au/**/*"/>
 		</copy>
 		
-		<javac srcdir="." includes="de/**/*.java" encoding="UTF-8" destdir="build/classes" debuglevel="lines,vars,source" classpathref="libsRef" includeantruntime="false" debug="true" source="1.5" target="1.5">
+		<javac srcdir="." includes="de/**/*.java" encoding="UTF-8" destdir="build/classes" debuglevel="lines,vars,source" includeantruntime="false" debug="true" source="1.5" target="1.5">
 			<compilerarg value="-Xlint:unchecked"/>
 			<compilerarg value="-Xlint:deprecation"/>
 		</javac>
@@ -49,7 +33,6 @@
 		<jar destfile="build/SKGB-offline.jar" basedir="build/package" compress="false">
 			<manifest>
 				<attribute name="Main-Class" value="de.skgb.offline.gui.Gui"/>
-				<!--attribute name="Class-Path" value="lib/geotools-8.5/*"/-->
 			</manifest>
 		</jar>
 		<delete quiet="true" includeemptydirs="true">
@@ -59,16 +42,18 @@
 	
 	
 	
-<!--
-	<target name="doc">
+	<target name="doc" depends="build">
 		<mkdir dir="build/doc"/>
-		<javadoc sourcepath="src" destdir="build/doc" classpathref="libsRef" access="package" Encoding="UTF-8" docencoding="UTF-8" charset="UTF-8" Version="true" Use="true" Author="true">
+		<javadoc sourcepath="." packagenames="de.*" destdir="build/doc" classpath="build/classes" access="package" Encoding="UTF-8" docencoding="UTF-8" charset="UTF-8" Version="true" Use="true" Author="true">
 			<link href="http://docs.oracle.com/javase/6/docs/api/"/>
-			<link href="http://tsusiatsoftware.net/jts/javadoc/"/>
-			<link href="http://docs.geotools.org/latest/javadocs/"/>
+			<link href="http://opencsv.sourceforge.net/apidocs/"/>
+<!-- we include these files with our dist instead of just linking to them -->
+		<!--fileset dir="Resources/lib">
+			<include name="*.jar"/>
+			<include name="*/*.jar"/>
+		</fileset-->
 		</javadoc>
 	</target>
--->
 	
 	
 	
@@ -112,6 +97,6 @@
 	
 	
 	
-	<target name="all" depends="clean, build, package" />
+	<target name="all" depends="clean, build, doc, package" />
 	
 </project>

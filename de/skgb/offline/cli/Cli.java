@@ -14,6 +14,12 @@ import java.io.File;
 
 
 
+/**
+ * The main class for running this app as CLI.
+ * @deprecated This used to be a debugging driver. It seems superfluous at this
+ *  point and could be removed soon.
+ */
+@Deprecated
 public class Cli {
 	
 	public static void main(String[] args) throws IOException {
