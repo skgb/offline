@@ -3,9 +3,11 @@
 package de.skgb.offline;
 
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -44,7 +46,8 @@ public final class MandateStore {
 	 *  MandateStore instance is constructed
 	 */
 	MandateStore (final MutableCsvFile csvFile) {
-		final Collection<Mandate> mandates = new ArrayList<Mandate>( csvFile.data.size() );
+		final List<Mandate> mandates = new ArrayList<Mandate>( csvFile.data.size() );
+		// :BUG: the mandates order isn't well-defined coming from MutableCsvFile, but we need that a constant order for hash comparison
 		for (final Map<String, String> row : csvFile.data) {
 			mandates.add( new Mandate(row) );
 		}
@@ -62,22 +65,35 @@ public final class MandateStore {
 		final Matcher regex2 = Pattern.compile(".*[A-Za-z0-9+/]{22}==.*").matcher(signature);
 		hashMissing = ! regex2.matches();
 		
+		hashBase64 = hashString(mandates, updated);
+		hashMatches = signature.endsWith( hashBase64 );
+	}
+	
+	
+	/**
+	 * Calculates the signature hash code used to verify the mandate store file
+	 * hasn't been changed. This is not a cryptographic code, merely a simple
+	 * checksum. The current implementation uses the MD5 algorithm.
+	 * @param mandates the list to calculate the hash for; to be able to compare the resulting hash-code, the list order needs to be well-defined (e. g. the same order 
+	 */
+	static String hashString (final List<Mandate> mandates, final String updated) {
 		final StringBuilder hashBuilder = new StringBuilder();
-		for (final Map<String, String> row : csvFile.data) {
-			for (final String cell : row.values()) {
+		for (final Mandate mandate : mandates) {
+			for (final String cell : mandate.properties.values()) {
 				hashBuilder.append(cell);
 			}
 		}
-		hashBuilder.append(String.valueOf( this.updated ));
+		hashBuilder.append(String.valueOf( updated ));  // valueOf avoids NullPointerException
 		try {
-			final byte[] hash = MessageDigest.getInstance("MD5").digest( hashBuilder.toString().getBytes() );
-			hashBase64 = DatatypeConverter.printBase64Binary(hash);
+			// macintosh charset: historical reasons
+			final byte[] data = hashBuilder.toString().getBytes(Charset.forName("x-MacRoman"));
+			final byte[] hash = MessageDigest.getInstance("MD5").digest(data);
+			return DatatypeConverter.printBase64Binary(hash);
 		}
 		catch (NoSuchAlgorithmException e) {
 			// this shouldn't happen as the MD5 algorithm is supposed to be built-in
 			throw new RuntimeException(e);
 		}
-		hashMatches = signature.endsWith( hashBase64 );
 	}
 	
 	
@@ -95,4 +111,5 @@ public final class MandateStore {
 		}
 		return null;
 	}
+	
 }

@@ -13,7 +13,11 @@ import java.util.Map;
  */
 final class Mandate {
 	
-	private final Map<String, String> mandate;
+	
+	/**
+	 * An immutable key-value map of this mandate's properties.
+	 */
+	final Map<String, String> properties;
 	
 	
 	/**
@@ -25,7 +29,7 @@ final class Mandate {
 	 */
 	Mandate (final Map<String, String> mandate) {
 		// defensive copy may be unneeded right now because mandate is private
-		this.mandate = Collections.unmodifiableMap(mandate);
+		properties = Collections.unmodifiableMap(mandate);
 	}
 	
 	
@@ -34,7 +38,7 @@ final class Mandate {
 	 * @return value for key "UMR" (or null if the key is missing)
 	 */
 	String uniqueReference () {
-		return mandate.get("UMR");
+		return properties.get("UMR");
 	}
 	
 	/**
@@ -42,7 +46,7 @@ final class Mandate {
 	 * @return value for key "Signed" (or null if the key is missing)
 	 */
 	String signatureDate () {
-		return mandate.get("Signed");
+		return properties.get("Signed");
 	}
 	
 	/**
@@ -50,7 +54,7 @@ final class Mandate {
 	 * @return value for key "IBAN" (or null if the key is missing)
 	 */
 	String iban () {
-		return mandate.get("IBAN");
+		return properties.get("IBAN");
 	}
 	
 	/**
@@ -58,7 +62,7 @@ final class Mandate {
 	 * @return value for key "SWIFT-BIC" (or null if the key is missing)
 	 */
 	String bic () {
-		return mandate.get("SWIFT-BIC");
+		return properties.get("SWIFT-BIC");
 	}
 	
 	/**
@@ -66,7 +70,7 @@ final class Mandate {
 	 * @return value for key "Holder" (or null if the key is missing)
 	 */
 	String accountHolder () {
-		return mandate.get("Holder");
+		return properties.get("Holder");
 	}
 	
 }
