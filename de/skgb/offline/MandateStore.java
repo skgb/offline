@@ -112,4 +112,23 @@ public final class MandateStore {
 		return null;
 	}
 	
+	
+	/**
+	 * Debug output -- DO NOT USE in production code. Format subject to change.
+	 */
+	public String toString () {
+		final StringBuilder b = new StringBuilder();
+		b.append("updated: " + updated + "\n");
+		b.append("hashMissing: " + hashMissing + "\n");
+		b.append("hashMatches: " + hashMatches + "\n");
+		b.append("hashBase64 (calculated): " + hashBase64 + "\n");
+		b.append("mandates.size: " + mandates.size() + "\n");
+		b.append("mandates: { ");
+		for (final Mandate mandate : mandates) {
+			b.append(mandate.uniqueReference() + " ");
+		}
+		b.append("}\n");
+		return b.toString();
+	}
+	
 }

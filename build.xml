@@ -58,7 +58,11 @@
 	
 	
 	<target name="clean">
-		<delete dir="build"/>
+		<!-- do not deeply follow symlinks and delete whatever's in the original directories they point to, which would otherwise be ant's default behaviour (@#$%^*!!) -->
+		<delete removenotfollowedsymlinks="true" quiet="false" failonerror="false" includeemptydirs="true">
+		<!--delete removenotfollowedsymlinks="true" verbose="true" quiet="false" failonerror="false" includeemptydirs="true"-->
+			<fileset dir="build" followsymlinks="false"/>
+		</delete>
 	</target>
 	
 	
@@ -69,34 +73,57 @@
 	
 	
 	
-<!--
-	<taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="libsRef"/>
-	
-	<target name="build-tests" depends="build">
-		<mkdir dir="build/classes"/>
-    	
-		<javac srcdir="test" destdir="build/classes" debuglevel="lines,vars,source" classpathref="libsRef" includeantruntime="false" debug="true" source="1.5" target="1.5">
+	<target name="test" depends="build, testrun, testcheck" />
+	<target name="testrun">
+		
+		<javac srcdir="test/backend1" destdir="build/classes" debuglevel="lines,vars,source" includeantruntime="false" debug="true" source="1.5" target="1.5">
 			<compilerarg value="-Xlint:unchecked"/>
 			<compilerarg value="-Xlint:deprecation"/>
 		</javac>
-    	
-    </target>
-	
-	<target name="test" depends="build-tests">
-		<testng outputdir="build/test-report">
-			<classpath>
-				<pathelement path="build/classes"/>
-				<path refid="libsRef"/>
-			</classpath>
-			<xmlfileset dir="test" includes="*.xml"/>
-		</testng>
+		
+		<mkdir dir="build/test"/>
+		<java classname="Test1" classpath="build/classes" fork="true">
+			<arg value="test/backend1"/>
+			<arg value="build/test"/>
+		</java>
+		
+	</target>
+	<target name="testcheck"><!-- call this directly to test Windows results manually after copying those results into build/test -->
+		
+		<exec dir="." executable="diff" searchpath="true" output="build/test/log.diff">
+			<arg line="-u"/>
+			<arg file="test/backend1/good-log.txt"/>
+			<arg file="build/test/log.txt"/>
+		</exec>
+		<exec dir="build/test" executable="find" searchpath="true">
+			<arg line="log.diff"/>
+			<arg line="-empty"/>
+			<arg line="-type"/>
+			<arg line="f"/>
+			<arg line="-delete"/>
+		</exec>
+		<available property="Log_test_failed" file="build/test/log.diff"/>
+		
+		<exec dir="." executable="diff" searchpath="true" output="build/test/out.diff">
+			<arg line="-u"/>
+			<arg file="test/backend1/good-out-simplified.csv"/>
+			<arg file="build/test/out.csv"/>
+		</exec>
+		<exec dir="build/test" executable="find" searchpath="true">
+			<arg line="out.diff"/>
+			<arg line="-empty"/>
+			<arg line="-type"/>
+			<arg line="f"/>
+			<arg line="-delete"/>
+		</exec>
+		<available property="Debit_output_test_failed" file="build/test/out.diff"/>
+		
+		<fail if="Log_test_failed"/>
+		<fail if="Debit_output_test_failed"/>
 	</target>
 	
-	<target name="cleantest" depends="clean, test" />
--->
 	
 	
-	
-	<target name="all" depends="clean, build, doc, package" />
+	<target name="all" depends="clean, build, doc, test, package" />
 	
 </project>
