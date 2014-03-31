@@ -94,7 +94,7 @@ public final class SkgbOffline {
 			if (jobType.equals( directDebitJob )) {
 				// NB: these assignments will fail silently if the headers aren't spelled EXACTLY right
 				debit.put(debitHeader.get("accountHolder"), mandate.accountHolder());
-				debit.put(debitHeader.get("signatureDate"), mandate.signatureDate());
+				debit.put(debitHeader.get("signatureDate"), mandate.signatureDateAsDinOld());
 				debit.put(debitHeader.get("creditorId"), creditorId);
 			}
 			else if (jobType.equals( paymentJob )) {

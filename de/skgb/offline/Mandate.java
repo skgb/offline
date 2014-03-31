@@ -5,6 +5,8 @@ package de.skgb.offline;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -43,10 +45,45 @@ final class Mandate {
 	
 	/**
 	 * Mandatsdatum (Unterschrift)
-	 * @return value for key "Signed" (or null if the key is missing)
+	 * @return original value for key "Signed" (or null if the key is missing)
 	 */
 	String signatureDate () {
 		return properties.get("Signed");
+	}
+	
+	/**
+	 * @return a java.util.regex.Matcher instance that contains the year in
+	 *  group 1, the month in group 2 and the day in group 3
+	 * @throws IllegalStateException if the key "Signed" is null or can't be
+	 *  parsed as a date
+	 */
+	private Matcher signatureDateParsed () {
+		final String signatureDate = signatureDate();
+		if (signatureDate == null) {
+			throw new IllegalStateException("failed to parse empty signatureDate (UMR: '" + String.valueOf(uniqueReference()) + "')");
+		}
+		
+		final Matcher regex = Pattern.compile("([0-9]{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])").matcher(signatureDate);
+		if (! regex.matches()) {
+			throw new IllegalStateException("failed to parse signatureDate '" + String.valueOf(signatureDate) + "' (UMR: '" + String.valueOf(uniqueReference()) + "')");
+		}
+		
+		return regex;
+	}
+	
+	/**
+	 * Mandatsdatum (Unterschrift), DIN-Format alt (31.12.1999)
+	 * @return date value of key "Signed" expressed in legacy little-endian DIN
+	 *  format or the empty string iff the value of key "Signed" is the empty
+	 *  string
+	 * @throws IllegalStateException if the value of key "Signed" is null or
+	 *  can't be parsed as a date (unless it is the empty string)
+	 */
+	String signatureDateAsDinOld () {
+		if (signatureDate().length() == 0) {
+			return "";
+		}
+		return signatureDateParsed().group(3) + "." + signatureDateParsed().group(2) + "." + signatureDateParsed().group(1);
 	}
 	
 	/**
