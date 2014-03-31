@@ -28,6 +28,7 @@ public final class SkgbOffline {
 		debitHeader.put("creditorId", "GläubigerID");
 		debitHeader.put("uniqueReference", "MandatsID");
 		debitHeader.put("signatureDate", "Mandatsdatum");
+		debitHeader.put("comment", "Kommentar");
 	}
 	
 	
@@ -90,15 +91,16 @@ public final class SkgbOffline {
 			
 			debit.put(debitHeader.get("iban"), mandate.iban());
 			debit.put(debitHeader.get("bic"), mandate.bic());
+			debit.put(debitHeader.get("accountHolder"), mandate.accountHolder());
 			final String jobType = debit.get(debitHeader.get("jobType"));
 			if (jobType.equals( directDebitJob )) {
 				// NB: these assignments will fail silently if the headers aren't spelled EXACTLY right
-				debit.put(debitHeader.get("accountHolder"), mandate.accountHolder());
 				debit.put(debitHeader.get("signatureDate"), mandate.signatureDateAsDinOld());
 				debit.put(debitHeader.get("creditorId"), creditorId);
 			}
 			else if (jobType.equals( paymentJob )) {
 				debit.put(debitHeader.get("uniqueReference"), "");  // no mandate reference for a payment
+				debit.put(debitHeader.get("comment"), "UMR " + uniqueReference);
 			}
 			else {
 				throw new DebitDataException("job type '" + jobType + "' unknown");
