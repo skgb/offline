@@ -84,7 +84,17 @@ public final class SkgbOffline {
 	MutableCsvFile merge (final MutableCsvFile debitFile) {
 		for (final Map<String, String> debit : debitFile.data) {
 			final String uniqueReference = debit.get(debitHeader.get("uniqueReference"));
-			final Mandate mandate = mandateStore.byReference(uniqueReference);
+			Mandate mandate = null;
+			try {
+				mandate = mandateStore.byReference(uniqueReference);
+			}
+			catch (NullPointerException exception) {
+				if (! debit.containsKey(debitHeader.get("uniqueReference"))) {
+					final String line = String.valueOf(debit);
+					throw new DebitDataException("UMR header '" + debitHeader.get("uniqueReference") + "' not found in debit job " + (line.length() > 80 ? line.substring(0, 80) + "…" : line), exception);
+				}
+				throw exception;
+			}
 			if (mandate == null) {
 				throw new DebitDataException("mandate '" + uniqueReference + "' not found");
 			}

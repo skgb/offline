@@ -13,4 +13,5 @@
 
 - weg finden, die pruefsumme "einfach" zu erzeugen (modifier-klick waere vielleicht gut)
   derzeit: ausgabe auf stdout im constructor
-+ gutes error-handling (kein crash bei fehlern in der eingabedatei, leeren feldern, fehlenden mandaten etc)
+- hilfreichere infos bei fehlern
+- gutes error-handling (möglichkeit, fehler in der eingabedatei, leeren feldern, fehlenden mandaten etc zu überspringen o. ä.?)

@@ -148,8 +148,11 @@ final class MutableCsvFile {
 		}
 		final StringBuilder builder = new StringBuilder();
 		for (final Map<String, String> map : data) {
+			// TODO: map actually has a usable toString method we might consider
 			for (final Map.Entry<String, String> entry : map.entrySet()) {
-				builder.append(entry.getKey() + "=" + entry.getValue() + ", ");
+//				if (entry.getValue() != null && entry.getValue().length() > 0) {
+					builder.append(entry.getKey() + "=" + entry.getValue() + ", ");
+//				}
 			}
 			builder.append("\n");
 		}

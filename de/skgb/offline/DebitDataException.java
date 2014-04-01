@@ -13,4 +13,8 @@ public final class DebitDataException extends RuntimeException {
 		super(message);
 	}
 	
+	DebitDataException (final String message, final Throwable cause) {
+		super(message, cause);
+	}
+	
 }

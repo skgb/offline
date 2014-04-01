@@ -101,10 +101,14 @@ public final class MandateStore {
 	 * Finds and retrieves a single Mandate from the store.
 	 * @param reference the unique mandate reference of the mandate to search for
 	 * @return null if the mandate is not in the store
+	 * @throws NullPointerException if reference == null
 	 */
 	Mandate byReference (final String reference) {
 		// we don't have that many mandates => sequential search
 		for (final Mandate mandate : mandates) {
+			if (mandate == null) {
+				throw new IllegalStateException("mandate store contains <null> value (searching for UMR: '" + reference + "')");
+			}
 			if ( reference.equals(mandate.uniqueReference()) ) {
 				return mandate;
 			}

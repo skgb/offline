@@ -3,13 +3,17 @@
 package de.skgb.offline.gui;
 
 
+import de.skgb.offline.DebitDataException;
 import de.skgb.offline.SkgbOffline;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 /**
  * The main class for running this app as GUI. This is a controller class,
@@ -23,7 +27,10 @@ class Gui implements ActionListener {
 	 * package. At some point this field should be moved over there so that
 	 * we have a grand unified version number for the whole project.
 	 */
-	static final String version = "0.2";
+	static final String version = "0.2.5";
+	
+	// used for stack trace abbreviation
+	private static final String myPackageLeader = "de.skgb.";
 	
 	SkgbOffline app;
 	
@@ -71,44 +78,108 @@ class Gui implements ActionListener {
 	}
 	
 	public void actionPerformed (ActionEvent event) {
-		if (event.getSource() == window.mandateStoreButton) {
-			File file = new CsvFileDialog(window).open("Mandatssammlung öffnen");
-			if (file == null) {
-				return;
+		try {
+			if (event.getSource() == window.mandateStoreButton) {
+				File file = new CsvFileDialog(window).open("Mandatssammlung öffnen");
+				if (file == null) {
+					return;
+				}
+				loadMandateStore(file);
+				savePrefs();
+				
 			}
-			loadMandateStore(file);
-			savePrefs();
-			
+			else if (event.getSource() == window.debitFileButton) {
+				if (app == null) {
+					throw new IllegalStateException();
+				}
+				
+				File inFile = new CsvFileDialog(window).open("Lastschriftdatei öffnen");
+				if (inFile == null) {
+					return;
+				}
+				
+				File outFile = new CsvFileDialog(window).save("Lastschriftdatei mit Kontodaten sichern", "out.csv");
+				if (outFile == null) {
+					return;
+				}
+				
+//				try {
+					app.process(inFile, outFile);
+//				}
+//				catch (IOException e) {
+//					throw new RuntimeException(e);
+//				}
+				
+//				System.out.println(outFile);
+//				throw new UnsupportedOperationException();
+				
+			}
+			else {
+				throw new UnsupportedOperationException();
+			}
 		}
-		else if (event.getSource() == window.debitFileButton) {
-			if (app == null) {
-				throw new IllegalStateException();
-			}
-			
-			File inFile = new CsvFileDialog(window).open("Lastschriftdatei öffnen");
-			if (inFile == null) {
-				return;
-			}
-			
-			File outFile = new CsvFileDialog(window).save("Lastschriftdatei mit Kontodaten sichern", "out.csv");
-			if (outFile == null) {
-				return;
-			}
-			
+		catch (Exception e) {
+			reportException(e);
+		}
+	}
+	
+	private void reportException (final Exception exception) {
+		exception.printStackTrace();
+		System.out.println();
+		
+		if (! GraphicsEnvironment.isHeadless()) {
 			try {
-				app.process(inFile, outFile);
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			}
-			catch (IOException e) {
-				throw new RuntimeException(e);
+			catch (Exception e) {
+				// ignore (keep default LAF)
 			}
-			
-//			System.out.println(outFile);
-//			throw new UnsupportedOperationException();
-			
+			SwingUtilities.invokeLater( new Runnable () {
+				public void run () {
+					String message = "Es ist ein Problem aufgetreten, möglicherweise wegen eines Programmierfehlers.\nBitte wende Dich an den IT-Ausschuss der SKGB.";
+					if (exception instanceof DebitDataException) {
+						message = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.\n\n_______\n(Die folgenden Angaben können der Fehlersuche dienen.)";
+					}
+					message += "\n\n" + abbreviatedStackTrace(exception);
+					JOptionPane.showMessageDialog(window, message, "SKGB-offline: Fehler", JOptionPane.ERROR_MESSAGE);
+				}
+			});
 		}
-		else {
-			throw new UnsupportedOperationException();
+	}
+	
+	private static String abbreviatedStackTrace (final Throwable throwable) {
+		final int maxStackTraces = 12;
+		
+		final StringBuilder builder = new StringBuilder();
+		builder.append( throwable.getClass().getCanonicalName() );
+		if (throwable.getMessage() != null) {
+			builder.append(":\n      ");
+			builder.append(throwable.getMessage());
 		}
+		
+		final StackTraceElement[] stack = throwable.getStackTrace();
+		boolean myPackageFound = false;
+		int i = 0;
+		for ( ; i < stack.length && i < maxStackTraces; i++) {
+			final String trace = stack[i].toString();
+			builder.append("\n- ");
+			builder.append(trace);
+			if (myPackageFound && ! trace.startsWith(myPackageLeader)) {
+				break;
+			}
+			if (! myPackageFound && trace.startsWith(myPackageLeader)) {
+				myPackageFound = true;
+			}
+		}
+		if (i < maxStackTraces - 1) {
+			builder.append("\n… " + (stack.length - i - 1) + " more");
+		}
+		
+		if (throwable.getCause() != null) {
+			builder.append("\n\nCaused by:\n");
+			builder.append(abbreviatedStackTrace(throwable.getCause()));
+		}
+		return builder.toString();
 	}
 	
 	public static void main (final String[] args) {
