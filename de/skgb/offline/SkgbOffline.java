@@ -109,8 +109,14 @@ public final class SkgbOffline {
 				debit.put(debitHeader.get("creditorId"), creditorId);
 			}
 			else if (jobType.equals( paymentJob )) {
-				debit.put(debitHeader.get("uniqueReference"), "");  // no mandate reference for a payment
-				debit.put(debitHeader.get("comment"), "UMR " + uniqueReference);
+				// no mandate reference for a payment
+				debit.put(debitHeader.get("uniqueReference"), "");
+				String comment = debit.get(debitHeader.get("comment"));
+				if (comment.length() > 0) {
+					comment += " / ";
+				}
+				comment += "ÜB-Kto UMR " + uniqueReference;
+				debit.put(debitHeader.get("comment"), comment);
 			}
 			else {
 				throw new DebitDataException("job type '" + jobType + "' unknown");
