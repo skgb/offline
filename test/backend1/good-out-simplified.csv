@@ -1,5 +1,5 @@
 "Empfängername";"Kontonummer";"Bankleitzahl";"IBAN";"BIC";"Verwendungszweck";"Betrag";"Auftragsart";"Textschlüssel";"TSErgänzung";"Kundenreferenz";"GläubigerID";"MandatsID";"Mandatsdatum";"Mandatstyp";"Ausführungsdatum";"Kommentar"
-"TEST No Name";"";"";"DE66100000000000000101";"MARKDEF1100";"Überweisung";"0,01";"SEPA-ÜB";"";"";"";"";"";"";"";"";"UMR Test1-Ok"
+"TEST No Name";"";"";"DE66100000000000000101";"MARKDEF1100";"Überweisung";"0,01";"SEPA-ÜB";"";"";"";"";"";"";"";"";"Kommentar / UMR Test1-Ok"
 "TEST No Name";"";"";"DE66100000000000000101";"MARKDEF1100";"Überweisung, ohne Betrag";"";"SEPA-ÜB";"";"";"";"";"";"";"";"";"UMR Test1-Ok"
 "TEST No Name";"";"";"DE66100000000000000101";"MARKDEF1100";"Überweisung, Betrag null";"0";"SEPA-ÜB";"";"";"";"";"";"";"";"";"UMR Test1-Ok"
 "TEST No Name";"";"";"DE66100000000000000101";"MARKDEF1100";"Lastschrift";"0,01";"SEPA-LAS";"";"";"";"DE67SEG00000074132";"Test1-Ok";"01.01.1999";"frst";"";" "

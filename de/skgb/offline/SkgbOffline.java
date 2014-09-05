@@ -111,11 +111,11 @@ public final class SkgbOffline {
 			else if (jobType.equals( paymentJob )) {
 				// no mandate reference for a payment
 				debit.put(debitHeader.get("uniqueReference"), "");
-				String comment = debit.get(debitHeader.get("comment"));
+				String comment = debit.get(debitHeader.get("comment")).trim();
 				if (comment.length() > 0) {
 					comment += " / ";
 				}
-				comment += "ÜB-Kto UMR " + uniqueReference;
+				comment += "UMR " + uniqueReference;
 				debit.put(debitHeader.get("comment"), comment);
 			}
 			else {
