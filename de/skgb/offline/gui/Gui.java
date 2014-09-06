@@ -122,7 +122,6 @@ class Gui implements ActionListener {
 //				}
 				
 //				System.out.println(outFile);
-//				throw new UnsupportedOperationException();
 				
 			}
 			else {
