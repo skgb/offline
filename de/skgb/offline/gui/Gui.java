@@ -27,7 +27,7 @@ class Gui implements ActionListener {
 	 * package. At some point this field should be moved over there so that
 	 * we have a grand unified version number for the whole project.
 	 */
-	static final String version = "0.3d";
+	static final String version = "0.3";
 	
 	// used for stack trace abbreviation
 	private static final String myPackageLeader = "de.skgb.";
@@ -38,17 +38,28 @@ class Gui implements ActionListener {
 	
 	GuiWindow window;
 	
+	CsvFileDialog fileDialog;
+	
 	Gui () {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (Exception e) {
+			// ignore (keep default LAF)
+		}
+		
 		window = new GuiWindow(this);
 		window.versionLabel.setText("Version " + version);
 //		EventQueue.invokeLater( window );
 		window.run();
 		
+		fileDialog = new CsvFileDialog(window);
+		
 		prefs = new Preferences().load();
 		String path = prefs.get("MandateStore");
 		if (path != null) {
 			File file = new File(path);
-			if (file != null && file.isFile()) {
+			if (file != null && file.canRead()) {
 				loadMandateStore(file);
 			}
 		}
@@ -80,7 +91,7 @@ class Gui implements ActionListener {
 	public void actionPerformed (ActionEvent event) {
 		try {
 			if (event.getSource() == window.mandateStoreButton) {
-				File file = new CsvFileDialog(window).open("Mandatssammlung öffnen");
+				File file = fileDialog.open("Mandatssammlung öffnen");
 				if (file == null) {
 					return;
 				}
@@ -93,12 +104,12 @@ class Gui implements ActionListener {
 					throw new IllegalStateException();
 				}
 				
-				File inFile = new CsvFileDialog(window).open("Lastschriftdatei öffnen");
+				File inFile = fileDialog.open("Lastschriftdatei öffnen");
 				if (inFile == null) {
 					return;
 				}
 				
-				File outFile = new CsvFileDialog(window).save("Lastschriftdatei mit Kontodaten sichern", "out.csv");
+				File outFile = fileDialog.save("Lastschriftdatei mit Kontodaten sichern", "out.csv");
 				if (outFile == null) {
 					return;
 				}
