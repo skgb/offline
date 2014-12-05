@@ -27,7 +27,7 @@ class Gui implements ActionListener {
 	 * package. At some point this field should be moved over there so that
 	 * we have a grand unified version number for the whole project.
 	 */
-	static final String version = "0.3";
+	static final String version = "0.4";
 	
 	// used for stack trace abbreviation
 	private static final String myPackageLeader = "de.skgb.";

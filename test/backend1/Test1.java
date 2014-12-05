@@ -20,6 +20,10 @@ public class Test1 {
 		writeMandateStoreInfo(writer, inPath + "/mandates-nohash-nodate.csv");
 		writeMandateStoreInfo(writer, inPath + "/mandates-wronghash-withdate.csv");
 		writeMandateStoreInfo(writer, inPath + "/mandates-wronghash-nodate.csv");
+		writeMandateStoreInfo(writer, inPath + "/mandates-valid-extrarow.csv");
+		writeMandateStoreInfo(writer, inPath + "/mandates-valid-extraline.csv");
+		writeMandateStoreInfo(writer, inPath + "/mandates-valid-commas.csv");
+		writeMandateStoreInfo(writer, inPath + "/mandates-onecol.csv");
 		
 		final File mandateFile = new File(inPath + "/mandates-valid.csv");
 		final File debitInFile = new File(inPath + "/debit-simplified.csv");
@@ -35,7 +39,12 @@ public class Test1 {
 	static void writeMandateStoreInfo (PrintWriter writer, String path) throws IOException {
 		writer.print("Loading mandate store: " + path + "\n");
 		writer.flush();  // we want this out early in case there is an exception in the next step
-		writer.print( new SkgbOffline(new File(path)).mandateStore + "\n");
+		try {
+			writer.print( new SkgbOffline(new File(path)).mandateStore + "\n");
+		}
+		catch (Exception e) {
+			writer.print( e + "\n\n" );
+		}
 		writer.flush();
 	}
 	

@@ -1,5 +1,6 @@
 Loading mandate store: test/backend1/mandates-valid-empty.csv
 updated: 1999-01-01
+error: null
 hashMissing: false
 hashMatches: true
 hashBase64 (calculated): xVgmYKQm/jbaUV3IZz0mYQ==
@@ -8,6 +9,7 @@ mandates: { }
 
 Loading mandate store: test/backend1/mandates-valid.csv
 updated: 1999-01-01
+error: null
 hashMissing: false
 hashMatches: true
 hashBase64 (calculated): wvjis3jXen8gFK44oxVbxA==
@@ -16,6 +18,7 @@ mandates: { Test1-Ok Test1-BlzFalsch Test1-BicLandAbw Test1-OhneBic Test1-OhneDa
 
 Loading mandate store: test/backend1/mandates-hashok-nodate.csv
 updated: null
+error: null
 hashMissing: false
 hashMatches: true
 hashBase64 (calculated): RYIsXQ0S5fT+GUEgmfnLVA==
@@ -24,6 +27,7 @@ mandates: { Test1-Ok Test1-BlzFalsch Test1-BicLandAbw Test1-OhneBic Test1-OhneDa
 
 Loading mandate store: test/backend1/mandates-nohash-withdate.csv
 updated: 1999-01-01
+error: null
 hashMissing: true
 hashMatches: false
 hashBase64 (calculated): wvjis3jXen8gFK44oxVbxA==
@@ -32,6 +36,7 @@ mandates: { Test1-Ok Test1-BlzFalsch Test1-BicLandAbw Test1-OhneBic Test1-OhneDa
 
 Loading mandate store: test/backend1/mandates-nohash-nodate.csv
 updated: null
+error: null
 hashMissing: true
 hashMatches: false
 hashBase64 (calculated): RYIsXQ0S5fT+GUEgmfnLVA==
@@ -40,6 +45,7 @@ mandates: { Test1-Ok Test1-BlzFalsch Test1-BicLandAbw Test1-OhneBic Test1-OhneDa
 
 Loading mandate store: test/backend1/mandates-wronghash-withdate.csv
 updated: 1999-01-01
+error: null
 hashMissing: false
 hashMatches: false
 hashBase64 (calculated): XISDeZbMqRsdaKQNbRFnLw==
@@ -48,9 +54,46 @@ mandates: { Test1-Ok Test1-BlzFalsch Test1-BicLandAbw Test1-OhneBic Test1-OhneDa
 
 Loading mandate store: test/backend1/mandates-wronghash-nodate.csv
 updated: null
+error: null
 hashMissing: false
 hashMatches: false
 hashBase64 (calculated): gbzRzmoctHIzQxE4IRuq1A==
 mandates.size: 10
 mandates: { Test1-Ok Test1-BlzFalsch Test1-BicLandAbw Test1-OhneBic Test1-OhneDatum Test1-BicKurz Test1-Ausl Test1-leer Test1-PrfzFalsch Test1-bogus }
+
+Loading mandate store: test/backend1/mandates-valid-extrarow.csv
+updated: 1999-01-01
+error: null
+hashMissing: false
+hashMatches: true
+hashBase64 (calculated): wvjis3jXen8gFK44oxVbxA==
+mandates.size: 9
+mandates: { Test1-Ok Test1-BlzFalsch Test1-BicLandAbw Test1-OhneBic Test1-OhneDatum Test1-BicKurz Test1-Ausl Test1-leer Test1-PrfzFalsch }
+
+Loading mandate store: test/backend1/mandates-valid-extraline.csv
+updated: 1999-01-01
+error: null
+hashMissing: false
+hashMatches: true
+hashBase64 (calculated): wvjis3jXen8gFK44oxVbxA==
+mandates.size: 9
+mandates: { Test1-Ok Test1-BlzFalsch Test1-BicLandAbw Test1-OhneBic Test1-OhneDatum Test1-BicKurz Test1-Ausl Test1-leer Test1-PrfzFalsch }
+
+Loading mandate store: test/backend1/mandates-valid-commas.csv
+updated: 1999-01-01
+error: null
+hashMissing: false
+hashMatches: true
+hashBase64 (calculated): wvjis3jXen8gFK44oxVbxA==
+mandates.size: 9
+mandates: { Test1-Ok Test1-BlzFalsch Test1-BicLandAbw Test1-OhneBic Test1-OhneDatum Test1-BicKurz Test1-Ausl Test1-leer Test1-PrfzFalsch }
+
+Loading mandate store: test/backend1/mandates-onecol.csv
+updated: 1999-01-01
+error: weniger Datenspalten als die erwarteten 5 oder mehr
+hashMissing: false
+hashMatches: false
+hashBase64 (calculated): xVgmYKQm/jbaUV3IZz0mYQ==
+mandates.size: 0
+mandates: { }
 
