@@ -37,10 +37,12 @@ final class Mandate {
 	
 	/**
 	 * Unique Mandate Reference
-	 * @return value for key "UMR" (or null if the key is missing)
+	 * @return value for key "UMR" (or null if either the key is missing or the
+	 *  value is the empty string, which is an error condition)
 	 */
 	String uniqueReference () {
-		return properties.get("UMR");
+		final String umr = properties.get("UMR");
+		return umr == null || umr.length() == 0 ? null : umr;
 	}
 	
 	/**

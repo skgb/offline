@@ -44,6 +44,9 @@ public final class MandateStore {
 	
 	/**
 	 * Initialises this mandate store from a mandate store table in CSV format.
+	 * <p>
+	 * Only CSV records having an UMR are added to the mandate store.
+	 * 
 	 * @param csvFile the CSV table file to read the mandate store data from;
 	 *  the given MutableCsvFile instance is no longer needed after this
 	 *  MandateStore instance is constructed
@@ -54,7 +57,11 @@ public final class MandateStore {
 		final List<Mandate> mandates = new ArrayList<Mandate>( csvFile.data.size() );
 		// :BUG: the mandates order isn't well-defined coming from MutableCsvFile, but we need that a constant order for hash comparison
 		for (final Map<String, String> row : csvFile.data) {
-			mandates.add( new Mandate(row) );
+			final Mandate mandate = new Mandate(row);
+			if (mandate.uniqueReference() != null) {
+				// this row is not empty, so we use it
+				mandates.add( mandate );
+			}
 		}
 		this.mandates = Collections.unmodifiableCollection(mandates);
 		
