@@ -172,6 +172,11 @@ class GuiWindow extends Frame implements Runnable {
 				label[1] = new Label();
 				label[2] = new Label();
 			}
+			else if (mandateStore.error != null) {
+				label[0] = new Label("Die geöffnete Datei ist keine Mandatssammlung.");
+				label[1] = new Label("[" + mandateStore.error + "]");
+				label[2] = new Label();
+			}
 			else if (mandateStore.hashMissing) {
 				label[0] = new Label("Die geöffnete Datei ist keine Mandatssammlung.");
 				label[1] = new Label("[Prüfsumme fehlt]");

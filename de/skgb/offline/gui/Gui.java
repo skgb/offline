@@ -148,9 +148,9 @@ class Gui implements ActionListener {
 				public void run () {
 					String message = "Es ist ein Problem aufgetreten, möglicherweise wegen eines Programmierfehlers.\nBitte wende Dich an den IT-Ausschuss der SKGB.";
 					if (exception instanceof DebitDataException) {
-						message = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.\n\n_______\n(Die folgenden Angaben können der Fehlersuche dienen.)";
+						message = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.";
 					}
-					message += "\n\n" + abbreviatedStackTrace(exception);
+					message += "\n\n_______\n(Die folgenden Angaben können der Fehlersuche dienen.)\n\n" + abbreviatedStackTrace(exception);
 					JOptionPane.showMessageDialog(window, message, "SKGB-offline: Fehler", JOptionPane.ERROR_MESSAGE);
 				}
 			});

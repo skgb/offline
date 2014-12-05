@@ -44,7 +44,7 @@ final class MutableCsvFile {
 	final private static char quote = '"';
 	final private static String lineEnding = "\r\n";
 	final private static int minColCount = 5;  // fail if fewer columns
-	final private static String tooFewColsMessage = "fewer data columns than the expected " + minColCount + " or more";
+	final private static String tooFewColsMessage = "weniger Datenspalten als die erwarteten " + minColCount + " oder mehr";
 	
 	
 	/**
