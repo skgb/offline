@@ -6,6 +6,9 @@
 		$Id$
 	-->
 	
+	<property name="javaversion" value="1.6"/>
+	<property name="bootclasspath" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar"/>
+	
 	
 	
 	<target name="build">
@@ -14,7 +17,7 @@
 			<fileset dir="Resources" includes="au/**/*"/>
 		</copy>
 		
-		<javac srcdir="." includes="de/**/*.java" encoding="UTF-8" destdir="build/classes" debuglevel="lines,vars,source" includeantruntime="false" debug="true" source="1.5" target="1.5">
+		<javac srcdir="." includes="de/**/*.java" encoding="UTF-8" destdir="build/classes" debuglevel="lines,vars,source" includeantruntime="false" debug="true" source="${javaversion}" target="${javaversion}" bootclasspath="${bootclasspath}">
 			<compilerarg value="-Xlint:unchecked"/>
 			<compilerarg value="-Xlint:deprecation"/>
 		</javac>
@@ -76,7 +79,7 @@
 	<target name="test" depends="build, testrun, testcheck" />
 	<target name="testrun">
 		
-		<javac srcdir="test/backend1" destdir="build/classes" debuglevel="lines,vars,source" includeantruntime="false" debug="true" source="1.5" target="1.5">
+		<javac srcdir="test/backend1" destdir="build/classes" debuglevel="lines,vars,source" includeantruntime="false" debug="true" source="${javaversion}" target="${javaversion}" bootclasspath="${bootclasspath}">
 			<compilerarg value="-Xlint:unchecked"/>
 			<compilerarg value="-Xlint:deprecation"/>
 		</javac>

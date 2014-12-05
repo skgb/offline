@@ -48,7 +48,7 @@ public final class SkgbOffline {
 	 * Initialises an instance with a mandate store read from a file.
 	 * @param mandateFile the CSV file to read the mandate store from
 	 * @throws NullPointerException if file == null
-	 * @throws IOException
+	 * @throws IOException .
 	 */
 	public SkgbOffline (final File mandateFile) throws IOException {
 		this.mandateFile = mandateFile;
@@ -67,8 +67,9 @@ public final class SkgbOffline {
 	 * @param outFile the CSV debit file to write the output data table to
 	 *  (an existing file will be overwritten)
 	 * @throws NullPointerException if inFile == null || outFile == null
-	 * @throws IOException
-	 * @throws DebitDataException
+	 * @throws IOException .
+	 * @throws DebitDataException if a semantic error is detected in the debit
+	 *  data
 	 */
 	public void process (final File inFile, final File outFile) throws IOException {
 		merge( MutableCsvFile.read(inFile) ).write(outFile);
@@ -78,8 +79,13 @@ public final class SkgbOffline {
 	/**
 	 * Adds SEPA CDD mandate data to the given CSV debit file. This method
 	 * implements the actual JOIN operation.
+	 * @param debitFile the CSV file containing the direct debit data that is
+	 *  still missing the mandate data
+	 * @return the same MutableCsvFile instance passed as debitFile (allowing
+	 *  call chaining)
 	 * @throws NullPointerException if debitFile == null
-	 * @throws DebitDataException
+	 * @throws DebitDataException if a semantic error is detected in the debit
+	 *  data
 	 */
 	MutableCsvFile merge (final MutableCsvFile debitFile) {
 		for (final Map<String, String> debit : debitFile.data) {

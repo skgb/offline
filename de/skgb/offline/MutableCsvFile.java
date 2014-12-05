@@ -71,7 +71,7 @@ final class MutableCsvFile {
 	 * @param file the CSV file to read data from
 	 * @return a new instance with the CSV file's data
 	 * @throws NullPointerException if file == null
-	 * @throws IOException
+	 * @throws IOException .
 	 * @see CSVReader
 	 */
 	static MutableCsvFile read (final File file) throws IOException {
@@ -114,7 +114,7 @@ final class MutableCsvFile {
 	 *  overwritten)
 	 * @throws NullPointerException if file == null
 	 * @throws IllegalStateException if header == null || data == null
-	 * @throws IOException
+	 * @throws IOException .
 	 * @see CSVWriter
 	 */
 	void write (final File file) throws IOException {

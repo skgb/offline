@@ -74,7 +74,11 @@ public final class MandateStore {
 	 * Calculates the signature hash code used to verify the mandate store file
 	 * hasn't been changed. This is not a cryptographic code, merely a simple
 	 * checksum. The current implementation uses the MD5 algorithm.
-	 * @param mandates the list to calculate the hash for; to be able to compare the resulting hash-code, the list order needs to be well-defined (e. g. the same order 
+	 * @param mandates the list to calculate the hash for; to be able to
+	 *  compare the resulting hash-code, the list order needs to be
+	 *  well-defined (e. g. in the order of the rows in the backing CSV file)
+	 * @param updated the date-stamp to include in the hash
+	 * @return the hash code
 	 */
 	static String hashString (final List<Mandate> mandates, final String updated) {
 		final StringBuilder hashBuilder = new StringBuilder();
