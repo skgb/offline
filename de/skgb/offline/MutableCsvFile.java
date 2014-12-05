@@ -43,6 +43,8 @@ final class MutableCsvFile {
 	final private static char separator = ';';
 	final private static char quote = '"';
 	final private static String lineEnding = "\r\n";
+	final private static int minColCount = 5;  // fail if fewer columns
+	final private static String tooFewColsMessage = "fewer data columns than the expected " + minColCount + " or more";
 	
 	
 	/**
@@ -63,6 +65,10 @@ final class MutableCsvFile {
 	List<String> header = null;
 	
 	
+	/** Describes any syntactic problem in loading the file. */
+	static String error = null;
+	
+	
 	/**
 	 * Read data from disk.
 	 * <p>
@@ -75,10 +81,22 @@ final class MutableCsvFile {
 	 * @see CSVReader
 	 */
 	static MutableCsvFile read (final File file) throws IOException {
-		final Reader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
-		final CSVReader csvReader = new CSVReader( fileReader, separator, quote );
+		Reader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
+		CSVReader csvReader = new CSVReader( fileReader, separator, quote );
 		
-		final String[] csvHeader = csvReader.readNext();
+		String[] csvHeader = csvReader.readNext();
+		
+		// hack to work around #147
+		if (csvHeader.length < minColCount) {
+			// try another separator if there seem to be fewer columns than expected
+			// (parsing with wrong separator may dump everything into column 1)
+			csvReader.close();
+			fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
+			csvReader = new CSVReader( fileReader, ',', quote );  // RFC 4180
+			csvHeader = csvReader.readNext();
+		}
+		error = csvHeader.length < minColCount ? tooFewColsMessage : null;  // report if still too few
+		
 		for (int i = 0; i < csvHeader.length; i++) {
 			csvHeader[i] = csvHeader[i].intern();
 		}

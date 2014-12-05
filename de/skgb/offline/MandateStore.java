@@ -26,6 +26,9 @@ public final class MandateStore {
 	/** The date on which the mandate store was created; null if unkown. */
 	public final String updated;
 	
+	/** Describes any error in loading the mandate store. */
+	public final String error;
+	
 	/** true if the signature hash was missing. */
 	public final boolean hashMissing;
 	
@@ -46,6 +49,8 @@ public final class MandateStore {
 	 *  MandateStore instance is constructed
 	 */
 	MandateStore (final MutableCsvFile csvFile) {
+		error = csvFile.error;
+		
 		final List<Mandate> mandates = new ArrayList<Mandate>( csvFile.data.size() );
 		// :BUG: the mandates order isn't well-defined coming from MutableCsvFile, but we need that a constant order for hash comparison
 		for (final Map<String, String> row : csvFile.data) {
@@ -127,6 +132,7 @@ public final class MandateStore {
 	public String toString () {
 		final StringBuilder b = new StringBuilder();
 		b.append("updated: " + updated + "\n");
+		b.append("error: " + error + "\n");
 		b.append("hashMissing: " + hashMissing + "\n");
 		b.append("hashMatches: " + hashMatches + "\n");
 		b.append("hashBase64 (calculated): " + hashBase64 + "\n");

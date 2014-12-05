@@ -74,7 +74,7 @@ class Gui implements ActionListener {
 		}
 		
 		window.mandateStoreField.setText(file.toString());
-		window.debitFileButton.setEnabled(! app.mandateStore.hashMissing);
+		window.debitFileButton.setEnabled(! app.mandateStore.hashMissing && app.mandateStore.error == null);
 		window.updateInfoPanel(app.mandateStore);
 		
 //		System.out.println(app.mandateStore.hashMissing);
