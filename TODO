@@ -15,3 +15,6 @@
   derzeit: ausgabe auf stdout im constructor
 - hilfreichere infos bei fehlern
 - gutes error-handling (möglichkeit, fehler in der eingabedatei, leeren feldern, fehlenden mandaten etc zu überspringen o. ä.?)
+
+KNOWN BUGS:
+- "key doppelt vorhanden", wenn MutableCvsFile über unnötige leere Spalten rechts am Ende stolpert

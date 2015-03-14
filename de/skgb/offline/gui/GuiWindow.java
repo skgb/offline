@@ -159,7 +159,7 @@ class GuiWindow extends Frame implements Runnable {
 	
 	
 	
-	class InfoPanel extends Panel {
+	static class InfoPanel extends Panel {
 		
 		Label[] label = new Label[3];
 		

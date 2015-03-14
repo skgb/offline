@@ -5,6 +5,7 @@ package de.skgb.offline.gui;
 
 import de.thaw.util.SystemDirectories;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -254,22 +255,26 @@ class Preferences {
 	
 	
 	Preferences load () {
+		FileInputStream stream = null;
+		final Properties properties = new Properties();
 		try {
-			FileInputStream stream = new FileInputStream(file);
-			Properties properties = new Properties();
+			stream = new FileInputStream(file);
 			properties.load(stream);
-			stream.close();
-			if (! bundleIdentifier.equals(properties.getProperty("CFBundleIdentifier"))) {
-				System.out.println("CFBundleIdentifier mismatch in prefs file " + file.toString());
-				return this;
+			if (bundleIdentifier.equals(properties.getProperty("CFBundleIdentifier"))) {
+				prefs = properties;
 			}
-			prefs = properties;
+			else {
+				System.out.println("CFBundleIdentifier mismatch in prefs file " + file.toString());
+			}
 		}
 		catch (FileNotFoundException e) {
 			// ignore; normal condition
 		}
 		catch (IOException e) {
 			e.printStackTrace();  // preferences are a non-critical function, so we just log the error
+		}
+		finally {
+			close(stream);
 		}
 		return this;  // enable chaining
 	}
@@ -278,16 +283,32 @@ class Preferences {
 	void save () {
 		set("CFBundleIdentifier", bundleIdentifier);
 		set("PreferencesVersion", prefVersion);
+		FileOutputStream stream = null;
 		try {
 			if (! file.getParentFile().exists()) {
-				file.getParentFile().mkdirs();
+				file.getParentFile().mkdirs();  // may fail
 			}
-			FileOutputStream stream = new FileOutputStream(file);
+			stream = new FileOutputStream(file);
 			prefs.store(stream, " SKGB-offline Preferences");
-			stream.close();
 		}
 		catch (IOException e) {
 			e.printStackTrace();  // preferences are a non-critical function, so we just log the error
+		}
+		finally {
+			close(stream);
+		}
+	}
+	
+	
+	private static void close (Closeable stream) {
+		if (stream == null) {
+			return;  // nothing to close
+		}
+		try {
+			stream.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();  // closing a preferences stream is non-critical, so we just log the error
 		}
 	}
 	
