@@ -4,7 +4,10 @@ package de.skgb.offline.gui;
 
 
 import de.skgb.offline.DebitDataException;
+import de.skgb.offline.MandateDataException;
+import de.skgb.offline.NoMandateException;
 import de.skgb.offline.SkgbOffline;
+import de.skgb.offline.SkgbOfflineProcessor;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionListener;
@@ -27,7 +30,7 @@ class Gui implements ActionListener {
 	 * package. At some point this field should be moved over there so that
 	 * we have a grand unified version number for the whole project.
 	 */
-	static final String version = "0.4";
+	static final String version = "0.5";
 	
 	// used for stack trace abbreviation
 	private static final String myPackageLeader = "de.skgb.";
@@ -53,21 +56,29 @@ class Gui implements ActionListener {
 //		EventQueue.invokeLater( window );
 		window.run();
 		
-		fileDialog = new CsvFileDialog(window);
-		
 		prefs = new Preferences().load();
 		String path = prefs.get("MandateStore");
 		if (path != null) {
 			File file = new File(path);
 			if (file != null && file.canRead()) {
-				loadMandateStore(file);
+				// try to load the mandate store given in the preferences; if that fails, just move on and leave the user to load it manually
+				try {
+					loadMandateStore(file);
+				}
+				catch (MandateDataException e) {
+					e.printStackTrace();
+				}
 			}
 		}
+		
+		fileDialog = new CsvFileDialog(window);
 	}
 	
 	void loadMandateStore (File file) {
 		try {
-			app = new SkgbOffline(file);
+			SkgbOffline app = new SkgbOffline(file);
+			app.mandateStore.validate();
+			this.app = app;
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
@@ -91,7 +102,11 @@ class Gui implements ActionListener {
 	public void actionPerformed (ActionEvent event) {
 		try {
 			if (event.getSource() == window.mandateStoreButton) {
-				File file = fileDialog.open("Mandatssammlung öffnen");
+				String path = prefs.get("MandateStore");
+				if (path != null) {
+					path = new File(path).getParent();
+				}
+				File file = fileDialog.open("Mandatssammlung öffnen", path);
 				if (file == null) {
 					return;
 				}
@@ -104,29 +119,32 @@ class Gui implements ActionListener {
 					throw new IllegalStateException();
 				}
 				
-				File inFile = fileDialog.open("Lastschriftdatei öffnen");
+				String path = prefs.get("LastDebitFileDirectory");
+				File inFile = fileDialog.open("Lastschriftdatei öffnen", path);
 				if (inFile == null) {
 					return;
 				}
+				prefs.set("LastDebitFileDirectory", inFile.getParent());
+				prefs.save();
 				
-				File outFile = fileDialog.save("Lastschriftdatei mit Kontodaten sichern", "out.csv");
+				SkgbOfflineProcessor processor = new SkgbOfflineProcessor(app).in(inFile);
+				
+				String outFileName = inFile.getName() != null ? inFile.getName() : "out.csv";
+				File outFile = fileDialog.save("Lastschriftdatei mit Kontodaten sichern", outFileName);
 				if (outFile == null) {
 					return;
 				}
 				
-//				try {
-					app.process(inFile, outFile);
-//				}
-//				catch (IOException e) {
-//					throw new RuntimeException(e);
-//				}
-				
-//				System.out.println(outFile);
+				processor.out(outFile);
+//				app.process(inFile, outFile);
 				
 			}
 			else {
 				throw new UnsupportedOperationException();
 			}
+		}
+		catch (NoMandateException e) {
+			reportException(e, "Buchen nicht möglich\n\nDie Lastschriftdatei enthält eine Lastschrift für das Mandat '" + e.uniqueReference() + "',\nwelches nicht in der Mandatssammlung vom " + app.mandateStore.updated + " ist.");
 		}
 		catch (Exception e) {
 			reportException(e);
@@ -134,6 +152,10 @@ class Gui implements ActionListener {
 	}
 	
 	private void reportException (final Exception exception) {
+		reportException(exception, null);
+	}
+	
+	private void reportException (final Exception exception, final String message) {
 		exception.printStackTrace();
 		System.out.println();
 		
@@ -146,12 +168,15 @@ class Gui implements ActionListener {
 			}
 			SwingUtilities.invokeLater( new Runnable () {
 				public void run () {
-					String message = "Es ist ein Problem aufgetreten, möglicherweise wegen eines Programmierfehlers.\nBitte wende Dich an den IT-Ausschuss der SKGB.";
-					if (exception instanceof DebitDataException) {
-						message = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.";
+					String text = "Es ist ein Problem aufgetreten, möglicherweise wegen eines Programmierfehlers.\nBitte wende Dich an den IT-Ausschuss der SKGB.";
+//					if (exception instanceof DebitDataException) {
+//						text = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.";
+//					}
+					text += "\n\n_______\n(Die folgenden Angaben können der Fehlersuche dienen.)\n\n" + abbreviatedStackTrace(exception);
+					if (message != null) {
+						text = message;
 					}
-					message += "\n\n_______\n(Die folgenden Angaben können der Fehlersuche dienen.)\n\n" + abbreviatedStackTrace(exception);
-					JOptionPane.showMessageDialog(window, message, "SKGB-offline: Fehler", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(window, text, "SKGB-offline: Fehler", JOptionPane.ERROR_MESSAGE);
 				}
 			});
 		}

@@ -102,9 +102,16 @@ public final class SkgbOffline {
 				throw exception;
 			}
 			if (mandate == null) {
-				throw new DebitDataException("mandate '" + uniqueReference + "' not found");
+				throw new NoMandateException(uniqueReference);
 			}
 			
+			String comment = debit.get(debitHeader.get("comment")).trim();
+			if (mandate.comment() != null && mandate.comment().trim().length() > 0) {
+				if (comment.length() > 0) {
+					comment += " / ";
+				}
+				comment += mandate.comment();
+			}
 			debit.put(debitHeader.get("iban"), mandate.iban());
 			debit.put(debitHeader.get("bic"), mandate.bic());
 			debit.put(debitHeader.get("accountHolder"), mandate.accountHolder());
@@ -117,15 +124,16 @@ public final class SkgbOffline {
 			else if (jobType.equals( paymentJob )) {
 				// no mandate reference for a payment
 				debit.put(debitHeader.get("uniqueReference"), "");
-				String comment = debit.get(debitHeader.get("comment")).trim();
 				if (comment.length() > 0) {
 					comment += " / ";
 				}
 				comment += "UMR " + uniqueReference;
-				debit.put(debitHeader.get("comment"), comment);
 			}
 			else {
 				throw new DebitDataException("job type '" + jobType + "' unknown");
+			}
+			if (comment.length() > 0) {
+				debit.put(debitHeader.get("comment"), comment);
 			}
 		}
 		return debitFile;

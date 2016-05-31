@@ -199,6 +199,11 @@ class Preferences {
 	}
 	
 	
+	void delete (String key) {
+		prefs.remove(key);
+	}
+	
+	
 	void findPrefsFile () {
 		final boolean win = String.valueOf( System.getProperty("os.name") ).contains("Windows");
 		final boolean mac = String.valueOf( System.getProperty("os.name") ).contains("Mac OS X");

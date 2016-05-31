@@ -54,10 +54,12 @@ public final class MandateStore {
 	MandateStore (final MutableCsvFile csvFile) {
 		error = csvFile.error;
 		
+		final String signature = csvFile.header.get(csvFile.header.size() - 1);
+		
 		final List<Mandate> mandates = new ArrayList<Mandate>( csvFile.data.size() );
 		// :BUG: the mandates order isn't well-defined coming from MutableCsvFile, but we need that a constant order for hash comparison
 		for (final Map<String, String> row : csvFile.data) {
-			final Mandate mandate = new Mandate(row);
+			final Mandate mandate = new Mandate(row, signature);
 			if (mandate.uniqueReference() != null) {
 				// this row is not empty, so we use it
 				mandates.add( mandate );
@@ -65,7 +67,6 @@ public final class MandateStore {
 		}
 		this.mandates = Collections.unmodifiableCollection(mandates);
 		
-		final String signature = csvFile.header.get(csvFile.header.size() - 1);
 		final Matcher regex = Pattern.compile(".*updated ([0-9]{4}-(?:0[1-9]|1[012])-(?:0[1-9]|[12][0-9]|3[01])).*").matcher(signature);
 		if (regex.matches()) {
 			updated = regex.group(1);
@@ -73,7 +74,6 @@ public final class MandateStore {
 		else {
 			updated = null;
 		}
-		
 		final Matcher regex2 = Pattern.compile(".*[A-Za-z0-9+/]{22}==.*").matcher(signature);
 		hashMissing = ! regex2.matches();
 		
@@ -130,6 +130,19 @@ public final class MandateStore {
 			}
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * Tries to find any data errors in the mandates.
+	 */
+	public void validate () {
+		for (final Mandate mandate : mandates) {
+			if (mandate == null) {
+				throw new IllegalStateException("mandate store contains <null> value");
+			}
+			mandate.validate();
+		}
 	}
 	
 	

@@ -108,7 +108,11 @@ final class MutableCsvFile {
 				if (row.containsKey(csvHeader[i])) {
 					throw new RuntimeException("key doppelt vorhanden");
 				}
-				row.put(csvHeader[i], csvData[i]);
+				String csvCell = csvData[i].trim();  // fix #149
+				if (csvCell.length() == 0 && csvData[i].length() > 0) {
+					csvCell = " ";  // certain software requires a non-empty last column; this line ensures cells containing just whitespace won't be empty
+				}
+				row.put(csvHeader[i], csvCell);
 			}
 			table.add( row );
 		}

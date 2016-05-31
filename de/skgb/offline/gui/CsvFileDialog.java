@@ -61,7 +61,7 @@ class CsvFileDialog {
 			ReplaceFileDialog (File file) {
 				super(new String[]{
 					"<html><b>»" + file.getName() + "« existiert bereits.<br>Möchten Sie das Objekt ersetzen?</b></html>",
-					"<html><small>Es existiert breits eine Datei oder ein Ordner mit<br>demselben Namen " +
+					"<html><small>Es existiert bereits eine Datei oder ein Ordner mit<br>demselben Namen " +
 					(file.getParentFile().getName().length() > 0 ? "im Ordner " + file.getParentFile().getName() : "in diesem Ordner") +
 					".<br>Beim Ersetzen wird der Inhalt überschrieben.</small></html>"
 				});
@@ -84,7 +84,7 @@ class CsvFileDialog {
 		String title;
 		
 		SaveCsvFileChooser (Frame parent, String title) {
-			super();
+			super(lastOpenPath);
 			this.parent = parent;
 			this.title = title;
 			addChoosableFileFilter(csvFilter);
@@ -126,21 +126,26 @@ class CsvFileDialog {
 	}
 	
 	
-	Frame parent;
+	final Frame parent;
+	String lastOpenPath = null;
 	
 	
-	CsvFileDialog (Frame parent) {
+	CsvFileDialog (final Frame parent) {
 		this.parent = parent;
 	}
 	
 	
-	File open (String title) {
+	File open (String title, String path) {
 		FileDialog dialog = new FileDialog(parent, title, FileDialog.LOAD);
+		if (path != null && path.length() > 0) {
+			dialog.setDirectory(path);
+		}
 		dialog.setFilenameFilter(new Filter());
 		dialog.setVisible(true);
 		if (dialog.getFile() == null || dialog.getDirectory() == null) {
 			return null;
 		}
+		lastOpenPath = dialog.getDirectory();
 		return new File(dialog.getDirectory() + dialog.getFile());
 	}
 	
@@ -149,8 +154,8 @@ class CsvFileDialog {
 		if (isWindows) {
 			SaveCsvFileChooser saveDialog = new SaveCsvFileChooser(parent, title);
 			return saveDialog.show(suggestedName);
-			// the win native AWT dialog isn't too great, see #124
-			// OTOH the mac os x laf's Swing dialog is abysmal
+			// the Win native AWT dialog isn't too great, see #124
+			// OTOH the Mac OS X laf's Swing dialog is abysmal
 		}
 		
 		FileDialog dialog = new FileDialog(parent, title, FileDialog.SAVE);

@@ -1,19 +1,15 @@
-﻿- properties
-- speicherort
-- falls nicht existent, lokaler pfad im selben ordner
+﻿- properties speicherort: falls nicht existent, lokaler pfad im selben ordner
 - mac-gui, menü, v. a. close
 - about-box (evtl. über klick auf stander auch in windows?)
 - bundle
 - kann aufs bundle verzichtet und alle details ins jar eingebaut werden?
 - app icon mac
 - doku
-+ default-pfad für mandatsstore etc.
 - MandateStore-konstruktor überarbieten, insb. parsen der signature
 - polishing, allgemein
 
 - weg finden, die pruefsumme "einfach" zu erzeugen (modifier-klick waere vielleicht gut)
   derzeit: ausgabe auf stdout im constructor
-- hilfreichere infos bei fehlern
 - gutes error-handling (möglichkeit, fehler in der eingabedatei, leeren feldern, fehlenden mandaten etc zu überspringen o. ä.?)
 
 KNOWN BUGS:

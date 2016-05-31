@@ -23,15 +23,31 @@ final class Mandate {
 	
 	
 	/**
+	 * 
+	 */
+	final String commentKey;
+	
+	
+	/**
 	 * Initialises this instance from a data table line read from a CSV file.
 	 * This constructor is designed to work with a data row from a
 	 * MutableCsvFile instance.
 	 * @param mandate the mandate's data
+	 * @param commentKey the key used in the mandate data for the comments column (if any)
 	 * @throws NullPointerException if mandate == null
 	 */
-	Mandate (final Map<String, String> mandate) {
+	Mandate (final Map<String, String> mandate, String commentKey) {
 		// defensive copy may be unneeded right now because mandate is private
 		properties = Collections.unmodifiableMap(mandate);
+		this.commentKey = commentKey == null ? "" : commentKey;
+	}
+	
+	
+	/**
+	 * 
+	 */
+	void validate () {
+		this.signatureDateAsDinOld();  // this call will trigger an exception if the signature date isn't valid
 	}
 	
 	
@@ -53,24 +69,57 @@ final class Mandate {
 		return properties.get("Signed");
 	}
 	
+	
+	/**
+	 * 
+	 */
+	private static class SignatureDate {
+		static final Pattern isoPattern = Pattern.compile("([0-9]{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])");
+		static final Pattern dinPattern = Pattern.compile("(0?[1-9]|[12][0-9]|3[01])\\. ?(0?[1-9]|1[012])\\. ?([0-9]{4})");
+		final String year;
+		final String month;
+		final String day;
+		SignatureDate (final String year, final String month, final String day) {
+			this.year = year;
+			this.month = month.length() == 1 ? "0" + month : month;
+			this.day = day.length() == 1 ? "0" + day : day;
+		}
+		static SignatureDate parseIso (final String signatureDate) {
+			final Matcher iso = isoPattern.matcher(signatureDate);
+			if (iso.matches()) {
+				return new SignatureDate(iso.group(1), iso.group(2), iso.group(3));
+			}
+			return null;
+		}
+		static SignatureDate parseDin (final String signatureDate) {
+			final Matcher din = dinPattern.matcher(signatureDate);
+			if (din.matches()) {
+				return new SignatureDate(din.group(3), din.group(2), din.group(1));
+			}
+			return null;
+		}
+	}
+	
 	/**
 	 * @return a java.util.regex.Matcher instance that contains the year in
 	 *  group 1, the month in group 2 and the day in group 3
 	 * @throws IllegalStateException if the key "Signed" is null or can't be
 	 *  parsed as a date
 	 */
-	private Matcher signatureDateParsed () {
+	private SignatureDate signatureDateParsed () {
 		final String signatureDate = signatureDate();
 		if (signatureDate == null) {
-			throw new IllegalStateException("failed to parse empty signatureDate (UMR: '" + String.valueOf(uniqueReference()) + "')");
+			throw new MandateDataException("failed to parse empty signatureDate (UMR: '" + String.valueOf(uniqueReference()) + "')");
 		}
 		
-		final Matcher regex = Pattern.compile("([0-9]{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])").matcher(signatureDate);
-		if (! regex.matches()) {
-			throw new IllegalStateException("failed to parse signatureDate '" + String.valueOf(signatureDate) + "' (UMR: '" + String.valueOf(uniqueReference()) + "')");
+		SignatureDate date = SignatureDate.parseIso(signatureDate);
+		if (date == null) {
+			date = SignatureDate.parseDin(signatureDate);
 		}
-		
-		return regex;
+		if (date == null) {
+			throw new MandateDataException("failed to parse signatureDate '" + String.valueOf(signatureDate) + "' (UMR: '" + String.valueOf(uniqueReference()) + "')");
+		}
+		return date;
 	}
 	
 	/**
@@ -85,7 +134,8 @@ final class Mandate {
 		if (signatureDate().length() == 0) {
 			return "";
 		}
-		return signatureDateParsed().group(3) + "." + signatureDateParsed().group(2) + "." + signatureDateParsed().group(1);
+		SignatureDate date = signatureDateParsed();
+		return date.day + "." + date.month + "." + date.year;
 	}
 	
 	/**
@@ -110,6 +160,14 @@ final class Mandate {
 	 */
 	String accountHolder () {
 		return properties.get("Holder");
+	}
+	
+	/**
+	 * Kommentar
+	 * @return value for comment from last column (or null if the comment wasn't parsed)
+	 */
+	String comment () {
+		return properties.get(commentKey);
 	}
 	
 }
