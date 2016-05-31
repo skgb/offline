@@ -8,7 +8,7 @@
 	
 	<property name="javaversionsource" value="1.6"/>
 	<property name="javaversiontarget" value="1.6"/>
-	<property name="bootclasspath" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar"/>
+	<property name="bootclasspath" value="/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar"/>
 	
 	
 	
@@ -48,7 +48,7 @@
 	
 	<target name="doc" depends="build">
 		<mkdir dir="build/doc"/>
-		<javadoc sourcepath="." packagenames="de.*" destdir="build/doc" classpath="build/classes" access="package" Encoding="UTF-8" docencoding="UTF-8" charset="UTF-8" Version="true" Use="true" Author="true">
+		<javadoc sourcepath="." packagenames="de.*" destdir="build/doc" classpath="build/classes" access="package" Encoding="UTF-8" docencoding="UTF-8" charset="UTF-8" Version="true" Use="true" Author="true" stylesheetfile="Resources/classic-stylesheet.css">
 			<link href="http://docs.oracle.com/javase/6/docs/api/"/>
 			<link href="http://opencsv.sourceforge.net/apidocs/"/>
 <!-- we include these files with our dist instead of just linking to them -->
@@ -80,47 +80,87 @@
 	<target name="test" depends="build, testrun, testcheck" />
 	<target name="testrun">
 		
-		<javac srcdir="test/backend1" destdir="build/classes" debuglevel="lines,vars,source" includeantruntime="false" debug="true" source="${javaversionsource}" target="${javaversiontarget}" bootclasspath="${bootclasspath}">
+		<javac srcdir="test" destdir="build/classes" debuglevel="lines,vars,source" includeantruntime="false" debug="true" source="${javaversionsource}" target="${javaversiontarget}" bootclasspath="${bootclasspath}">
 			<compilerarg value="-Xlint:unchecked"/>
 			<compilerarg value="-Xlint:deprecation"/>
 		</javac>
 		
 		<mkdir dir="build/test"/>
-		<java classname="Test1" classpath="build/classes" fork="true">
+		<java classname="test.Backend1" classpath="build/classes" fork="true">
 			<arg value="test/backend1"/>
+			<arg value="build/test"/>
+		</java>
+		<java classname="test.DinDate" classpath="build/classes" fork="true">
+			<arg value="test/dindate"/>
 			<arg value="build/test"/>
 		</java>
 		
 	</target>
-	<target name="testcheck"><!-- call this directly to test Windows results manually after copying those results into build/test -->
+	<target name="testcheck" depends="testcheck-backend1, testcheck-dindate" /><!-- call this directly to test Windows results manually after copying those results into build/test -->
+	
+	<target name="testcheck-backend1">
 		
-		<exec dir="." executable="diff" searchpath="true" output="build/test/log.diff">
+		<exec dir="." executable="diff" searchpath="true" output="build/test/backend1.log.diff">
 			<arg line="-u"/>
 			<arg file="test/backend1/good-log.txt"/>
-			<arg file="build/test/log.txt"/>
+			<arg file="build/test/backend1.log.txt"/>
 		</exec>
 		<exec dir="build/test" executable="find" searchpath="true">
-			<arg line="log.diff"/>
+			<arg line="backend1.log.diff"/>
 			<arg line="-empty"/>
 			<arg line="-type"/>
 			<arg line="f"/>
 			<arg line="-delete"/>
 		</exec>
-		<available property="Log_test_failed" file="build/test/log.diff"/>
+		<available property="Log_test_failed" file="build/test/backend1.log.diff"/>
 		
-		<exec dir="." executable="diff" searchpath="true" output="build/test/out.diff">
+		<exec dir="." executable="diff" searchpath="true" output="build/test/backend1.out.diff">
 			<arg line="-u"/>
 			<arg file="test/backend1/good-out-simplified.csv"/>
-			<arg file="build/test/out.csv"/>
+			<arg file="build/test/backend1.out.csv"/>
 		</exec>
 		<exec dir="build/test" executable="find" searchpath="true">
-			<arg line="out.diff"/>
+			<arg line="backend1.out.diff"/>
 			<arg line="-empty"/>
 			<arg line="-type"/>
 			<arg line="f"/>
 			<arg line="-delete"/>
 		</exec>
-		<available property="Debit_output_test_failed" file="build/test/out.diff"/>
+		<available property="Debit_output_test_failed" file="build/test/backend1.out.diff"/>
+		
+		<fail if="Log_test_failed"/>
+		<fail if="Debit_output_test_failed"/>
+	</target>
+	
+	<target name="testcheck-dindate">
+		
+		<exec dir="." executable="diff" searchpath="true" output="build/test/dindate.log.diff">
+			<arg line="-u"/>
+			<arg file="test/dindate/good-log.txt"/>
+			<arg file="build/test/dindate.log.txt"/>
+		</exec>
+		<exec dir="build/test" executable="find" searchpath="true">
+			<arg line="dindate.log.diff"/>
+			<arg line="-empty"/>
+			<arg line="-type"/>
+			<arg line="f"/>
+			<arg line="-delete"/>
+		</exec>
+		<available property="Log_test_failed" file="build/test/dindate.log.diff"/>
+		
+		<exec dir="." executable="diff" searchpath="true" output="build/test/dindate.out.diff">
+			<arg line="-u"/>
+			<arg file="test/dindate/good-out-simplified.csv"/>
+			<arg file="build/test/dindate.out.csv"/>
+		</exec>
+		<exec dir="build/test" executable="find" searchpath="true">
+			<arg line="dindate.out.diff"/>
+			<arg line="-empty"/>
+			<arg line="-type"/>
+			<arg line="f"/>
+			<arg line="-delete"/>
+		</exec>
+		<available property="Debit_output_test_failed" file="build/test/dindate.out.diff"/>
 		
 		<fail if="Log_test_failed"/>
 		<fail if="Debit_output_test_failed"/>

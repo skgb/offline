@@ -1,0 +1,7 @@
+"Empfängername";"Kontonummer";"Bankleitzahl";"IBAN";"BIC";"Verwendungszweck";"Betrag";"Auftragsart";"Textschlüssel";"TSErgänzung";"Kundenreferenz";"GläubigerID";"MandatsID";"Mandatsdatum";"Mandatstyp";"Ausführungsdatum";"Kommentar"
+"TEST No Name";"";"";"DE66100000000000000101";"MARKDEF1100";"Lastschrift";"0,01";"SEPA-LAS";"";"";"A";"DE67SEG00000074132";"Test2-DinFest";"01.01.1999";"frst";"";"a / führende Nullen für Tabellensatz"
+"TEST No Name";"";"";"DE95000000000000000102";"MARKDEF1100";"Lastschrift";"0,02";"SEPA-LAS";"";"";"B";"DE67SEG00000074132";"Test2-DinKurz";"01.01.1999";"rcur";"";"b / Engvariante ohne führende Nullen und ohne Leerzeichen"
+"TEST No Name";"";"";"DE68000000000000000103";"MARKDEF1100";"Lastschrift";"0,03";"SEPA-LAS";"";"";"C";"DE67SEG00000074132";"Test2-DinWeit";"01.01.1999";"fnal";"";"c / im Fließtext ohne führende Nullen und mit Leerzeichen"
+"TEST No Name";"";"";"DE82100000000000000104";"MARKDEF1100";"Lastschrift";"0,04";"SEPA-LAS";"";"";"D";"DE67SEG00000074132";"Test2-TrimDatum";"01.01.1999";"ooff";"";"d / Datumsfeld mit zusätzlichem Leerzeichen"
+"TEST No Name";"";"";"DE55100000000000000105";"MARKDEF1100";"Lastschrift";"0,05";"SEPA-LAS";"";"";"E";"DE67SEG00000074132";"Test2-TrimUMR";"01.01.1999";"ooff";"";"e / UMR-Feld mit zusätzlichem Leerzeichen"
+"TEST No Name";"";"";"DE14100100100000000106";"MARKDEF1100";"Lastschrift";"0,06";"SEPA-LAS";"";"";"F";"DE67SEG00000074132";"Test2-TrimIBAN";"01.01.1999";"ooff";"";"f / IBAN-Feld mit zusätzlichem Leerzeichen"

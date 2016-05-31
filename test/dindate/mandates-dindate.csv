@@ -1,0 +1,7 @@
+UMR;Signed;IBAN;SWIFT-BIC;Holder;"updated 1999-01-01 qNtj48ejeZAFD8lloRCv9A=="
+Test2-DinFest;"01.01.1999";"DE66100000000000000101";"MARKDEF1100";"TEST No Name";"führende Nullen für Tabellensatz"
+Test2-DinKurz;"1.1.1999";"DE95000000000000000102";"MARKDEF1100";"TEST No Name";"Engvariante ohne führende Nullen und ohne Leerzeichen"
+Test2-DinWeit;"1. 1. 1999";"DE68000000000000000103";"MARKDEF1100";"TEST No Name";"im Fließtext ohne führende Nullen und mit Leerzeichen"
+Test2-TrimDatum;"1999-01-01 ";"DE82100000000000000104";"MARKDEF1100";"TEST No Name";"Datumsfeld mit zusätzlichem Leerzeichen"
+" Test2-TrimUMR";"1999-01-01";"DE55100000000000000105";"MARKDEF1100";"TEST No Name";"UMR-Feld mit zusätzlichem Leerzeichen"
+Test2-TrimIBAN;"1999-01-01";" DE14100100100000000106";"MARKDEF1100";"TEST No Name";"IBAN-Feld mit zusätzlichem Leerzeichen"

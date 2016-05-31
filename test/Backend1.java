@@ -1,17 +1,18 @@
-// $Id$
+// $Id: Test1.java 751 2014-12-05 14:44:11Z aj3 $
 
+package test;
 
 import de.skgb.offline.*;
 import java.io.*;
 
 
-public class Test1 {
+public class Backend1 {
 	
 	public static void main (String[] args) throws IOException {
 		String inPath = args[0];
 		String outPath = args[1];
 		
-		PrintWriter writer = new PrintWriter(outPath + "/log.txt", "x-MacRoman");
+		PrintWriter writer = new PrintWriter(outPath + "/backend1.log.txt", "x-MacRoman");
 		
 		writeMandateStoreInfo(writer, inPath + "/mandates-valid-empty.csv");
 		writeMandateStoreInfo(writer, inPath + "/mandates-valid.csv");  // -hashok-withdate
@@ -27,7 +28,7 @@ public class Test1 {
 		
 		final File mandateFile = new File(inPath + "/mandates-valid.csv");
 		final File debitInFile = new File(inPath + "/debit-simplified.csv");
-		final File debitOutFile = new File(outPath + "/out.csv");
+		final File debitOutFile = new File(outPath + "/backend1.out.csv");
 		
 		SkgbOffline app = new SkgbOffline(mandateFile);
 		app.process(debitInFile, debitOutFile);

@@ -1,0 +1,9 @@
+Loading mandate store: test/dindate/mandates-dindate.csv
+updated: 1999-01-01
+error: null
+hashMissing: false
+hashMatches: true
+hashBase64 (calculated): qNtj48ejeZAFD8lloRCv9A==
+mandates.size: 6
+mandates: { Test2-DinFest Test2-DinKurz Test2-DinWeit Test2-TrimDatum Test2-TrimUMR Test2-TrimIBAN }
+
