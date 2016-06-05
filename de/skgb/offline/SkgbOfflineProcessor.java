@@ -1,4 +1,4 @@
-// $Id: SkgbOffline.java 732 2014-09-05 00:43:52Z aj3 $
+// $Id$
 
 package de.skgb.offline;
 

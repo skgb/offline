@@ -1,4 +1,4 @@
-// $Id: NoMandateException.java $
+// $Id$
 
 package de.skgb.offline;
 

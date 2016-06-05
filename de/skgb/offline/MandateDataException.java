@@ -1,4 +1,4 @@
-// $Id: MandateDataException.java 2016-05-30 $
+// $Id$
 
 package de.skgb.offline;
 

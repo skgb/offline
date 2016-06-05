@@ -7,45 +7,114 @@ import de.skgb.offline.MandateStore;
 
 import de.thaw.java.AWTImageView;
 
-import java.awt.Frame;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Panel;
-import java.awt.TextField;
 import java.awt.Button;
-import java.awt.Label;
-import java.awt.Graphics;
-import java.awt.Font;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.Rectangle;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.ActionListener;
 import java.net.URL;
 import javax.imageio.ImageIO;
 
 
 /**
  * The app's main window, including all widgets and minimal glue code.
+ * <p>
+ * &lt;rant&gt;
+ * <br>
+ * This window has been coded using AWT in the hope of getting a native UI on
+ * all platforms. However, it turned out that various Windows versions do not
+ * in fact use UI widgets with the native look-and-feel. Apparently even modern
+ * JRE versions for some reason use heavy-weight components with the
+ * look-and-feel of pre-XP Windows, which look decidedly out-of-place in XP,
+ * let alone more modern {cough} versions of Windoze. Of course, on OS X AWT
+ * does use heavy-weight components with the native look-and-feel, while Swing
+ * struggles to make its all-Java light-weight components look native. In the
+ * end the only option would seem to be to write a AWT UI for OS X and a Swing
+ * UI for Windoze -- which of course is not an option. Except for the menu bar
+ * and the app icon and the packaging code, which needs to be different. And
+ * except for the preferences and system paths, which are different anyway. And
+ * except for the differing UI conventions, e. g. Windoze's totally brain-dead
+ * insistence on using right-to-left text in western-language dialog boxes. And
+ * except for file chooser dialogs, which are totally unusable in Swing on OS X
+ * and slightly-less-totally unusable in AWT on Windoze. Good thing Java is
+ * cross-platform! Oh wait... m-(
+ * <br>
+ * &lt;/rant&gt;
+ * <p>
+ * Luckily, in the end, this class was just a small experiment of using Xcode /
+ * Interface Builder for rapid prototyping of an AWT window in the spirit of
+ * the long-defunct Nib4j. Even with the fromNSRect helper method, transferring
+ * widget measures from Xcode to Java source code manually turned out to be
+ * cumbersome and error-prone. With that and with AWT's inherent failures this
+ * experiment is clearly failed.
+ * <p>
+ * This class works well enough for now, but will require a complete rewrite
+ * from scratch using mostly Swing (or possibly JavaFX) as soon as any major
+ * changes are required.
  */
 class GuiWindow extends Frame implements Runnable {
 	
+	
+	/**
+	 * Height of the titlebar. Used for positioning of widgets, as AWT includes
+	 * the titlebar in its total dimensions, which makes cross-platform
+	 * positioning more difficult.
+	 */
 //	static int titlebarHeight = 22;  // Mac OS X 10.6
 //	static int titlebarHeight = 29;  // Windows XP
-	static int titlebarHeight = 23;
+	static final int titlebarHeight = 23;
 	
-	static Dimension windowSize = new Dimension(557, 456 + titlebarHeight);
 	
-	static Rectangle fromNSRect (int x, int y, int w, int h) {
+	/**
+	 * Dimensions of this window, taking into account the titlebar's height.
+	 */
+	static final Dimension windowSize = new Dimension(557, 456 + titlebarHeight);
+	
+	
+	/**
+	 * Convert from NSRect to Java AWT coordinates.
+	 * @param x from left
+	 * @param y from bottom
+	 * @param w width
+	 * @param h height
+	 * @return <code>new Rectangle(x, windowSize.height - y, w, h)</code>
+	 * @see <a href=http://cocoadevcentral.com/d/intro_to_quartz/>Introduction to Quartz</a>
+	 */
+	static Rectangle fromNSRect (final int x, final int y, final int w, final int h) {
 		return new Rectangle(x, windowSize.height - y, w, h);
 	}
 	
+	
+	/** TextField to make the chosen mandate store's path user-selectable (for copy/paste). */
+	final TextField mandateStoreField;
+	
+	/** Button to select the mandate store. */
+	final Button mandateStoreButton;
+	
+	/** Button to choose the debit file and start the processing. */
+	final Button debitFileButton;
+	
+	/** Area for feedback to the user about the chosen mandate store. */
 	InfoPanel infoPanel;
-	TextField mandateStoreField;
-	Button mandateStoreButton;
-	Button debitFileButton;
+	
+	/** Display the GUI version number. */
 	Label versionLabel;
 	
-	GuiWindow (ActionListener listener) {
+	
+	/**
+	 * Set up the window.
+	 * @param listener the ActionListener to send button clicks to
+	 */
+	GuiWindow (final ActionListener listener) {
 		super("SKGB-offline");
 		setLayout(null);
 		setLocation(300, 100);
@@ -56,7 +125,7 @@ class GuiWindow extends Frame implements Runnable {
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing (WindowEvent event) {
 				dispose();
-				System.exit(0); // expedite (debug)
+				listener.actionPerformed(new ActionEvent(event, event.getID(), "close"));
 			}
 		});
 		
@@ -85,7 +154,7 @@ class GuiWindow extends Frame implements Runnable {
 		try {
 			final URL url = ClassLoader.getSystemResource("winicon.png");
 			if (url == null) {
-				new RuntimeException().printStackTrace();  // :DEBUG:
+//				new RuntimeException().printStackTrace();  // :DEBUG:
 				return;  // non-critical resource; ignore
 			}
 			setIconImage(ImageIO.read(url));
@@ -96,7 +165,13 @@ class GuiWindow extends Frame implements Runnable {
 		}
 	}
 	
-	void updateInfoPanel (MandateStore mandateStore) {
+	
+	/**
+	 * Updates the feedback about the chosen mandate store. The info panel is
+	 * simply disposed of and recreated afresh with the new feedback.
+	 * @param mandateStore the MandateStore to give feedback to the user about
+	 */
+	void updateInfoPanel (final MandateStore mandateStore) {
 		if (infoPanel != null) {
 			remove(infoPanel);
 		}
@@ -104,15 +179,16 @@ class GuiWindow extends Frame implements Runnable {
 		add(infoPanel);
 	}
 	
-	void addMasthead () {
-		Font mastheadFont = new Font("Arial", Font.BOLD, 26);
-		Label blackLabel = addLabel(17, 415, 80, 31, "SKGB");
+	
+	private void addMasthead () {
+		final Font mastheadFont = new Font("Arial", Font.BOLD, 26);
+		final Label blackLabel = addLabel(17, 415, 80, 31, "SKGB");
 		blackLabel.setFont(mastheadFont);
-		Label redLabel = addLabel(92, 415, 91, 31, "-offline");
+		final Label redLabel = addLabel(92, 415, 91, 31, "-offline");
 		redLabel.setFont(mastheadFont);
 		redLabel.setForeground(Color.RED);
 		
-		AWTImageView image = new AWTImageView("logo.gif");
+		final AWTImageView image = new AWTImageView("logo.gif");
 		image.setBounds(fromNSRect(443, 436, 92, 55));
 		add(image);
 		
@@ -122,8 +198,9 @@ class GuiWindow extends Frame implements Runnable {
 		versionLabel.setAlignment(Label.RIGHT);
 	}
 	
-	void addExplanations () {
-		Font explanationFont = new Font(Font.DIALOG, Font.PLAIN, 11);
+	
+	private void addExplanations () {
+		final Font explanationFont = new Font(Font.DIALOG, Font.PLAIN, 11);
 		
 		addLabel(147, 290, 393, 14, "Die Mandatssammlung ist ein aus Datenschutzgründen nur offline").setFont(explanationFont);
 		addLabel(147, 276, 393, 14, "existierendes Dokument, mit dessen Hilfe Lastschriftdateien anhand der").setFont(explanationFont);
@@ -138,32 +215,42 @@ class GuiWindow extends Frame implements Runnable {
 		addLabel(17, 34, 523, 14, "die Verwendung mit »WISO Mein Geld« erlaubt.").setFont(explanationFont);
 	}
 	
-	Label addLabel (int x, int y, int w, int h, String text) {
-		Label label = new Label(text);
+	
+	private Label addLabel (final int x, final int y, final int w, final int h, final String text) {
+		final Label label = new Label(text);
 		label.setBounds(fromNSRect(x, y, w, h));
 		add(label);
 		return label;  // enable chaining
 	}
 	
+	
 	@Override
 	public void paint (final Graphics g) {
 		super.paint(g);
-		Rectangle line = fromNSRect(20, 384 -2, 417, 1);
+		final Rectangle line = fromNSRect(20, 384 -2, 417, 1);
 		g.setColor(Color.GRAY);
 		g.drawLine(line.x, line.y, line.x + line.width - 1, line.y + line.height - 1);
 	}
+	
 	
 	public void run () {
 		setVisible(true);
 	}
 	
 	
-	
+	/**
+	 * <code>Panel</code> for feedback to the user about the chosen mandate store.
+	 */
 	static class InfoPanel extends Panel {
 		
-		Label[] label = new Label[3];
+		/** Three separate fixed-length lines of text for feedback. */
+		final Label[] label = new Label[3];
 		
-		InfoPanel (MandateStore mandateStore) {
+		/**
+		 * Give feedback about the chosen mandate store.
+		 * @param mandateStore .
+		 */
+		InfoPanel (final MandateStore mandateStore) {
 			super(null);
 			setBounds(GuiWindow.fromNSRect(17, 157, 523, 51));
 			

@@ -8,10 +8,12 @@ import de.skgb.offline.MandateDataException;
 import de.skgb.offline.NoMandateException;
 import de.skgb.offline.SkgbOffline;
 import de.skgb.offline.SkgbOfflineProcessor;
+import de.thaw.util.Debug;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JOptionPane;
@@ -30,7 +32,7 @@ class Gui implements ActionListener {
 	 * package. At some point this field should be moved over there so that
 	 * we have a grand unified version number for the whole project.
 	 */
-	static final String version = "0.5";
+	static final String version = "0.5.1";
 	
 	// used for stack trace abbreviation
 	private static final String myPackageLeader = "de.skgb.";
@@ -53,21 +55,17 @@ class Gui implements ActionListener {
 		
 		window = new GuiWindow(this);
 		window.versionLabel.setText("Version " + version);
-//		EventQueue.invokeLater( window );
 		window.run();
 		
-		prefs = new Preferences().load();
-		String path = prefs.get("MandateStore");
-		if (path != null) {
-			File file = new File(path);
-			if (file != null && file.canRead()) {
-				// try to load the mandate store given in the preferences; if that fails, just move on and leave the user to load it manually
-				try {
-					loadMandateStore(file);
-				}
-				catch (MandateDataException e) {
-					e.printStackTrace();
-				}
+		prefs = new Preferences();
+		File file = prefs.mandateStore();
+		if (file != null) {
+			// try to load the mandate store given in the preferences; if that fails, just move on and leave the user to load it manually
+			try {
+				loadMandateStore(file);
+			}
+			catch (MandateDataException e) {
+				e.printStackTrace();
 			}
 		}
 		
@@ -94,24 +92,16 @@ class Gui implements ActionListener {
 //		System.out.println(app.mandateStore.updated);
 	}
 	
-	public void savePrefs () {
-		prefs.set("MandateStore", app.mandateFile.toString());
-		prefs.save();
-	}
-	
 	public void actionPerformed (ActionEvent event) {
 		try {
 			if (event.getSource() == window.mandateStoreButton) {
-				String path = prefs.get("MandateStore");
-				if (path != null) {
-					path = new File(path).getParent();
-				}
+				String path = prefs.mandateStoreFolder();
 				File file = fileDialog.open("Mandatssammlung öffnen", path);
 				if (file == null) {
 					return;
 				}
 				loadMandateStore(file);
-				savePrefs();
+				prefs.mandateStore(app.mandateFile);
 				
 			}
 			else if (event.getSource() == window.debitFileButton) {
@@ -119,13 +109,12 @@ class Gui implements ActionListener {
 					throw new IllegalStateException();
 				}
 				
-				String path = prefs.get("LastDebitFileDirectory");
+				String path = prefs.debitFileFolder();
 				File inFile = fileDialog.open("Lastschriftdatei öffnen", path);
 				if (inFile == null) {
 					return;
 				}
-				prefs.set("LastDebitFileDirectory", inFile.getParent());
-				prefs.save();
+				prefs.debitFileFolder(inFile.getParent());
 				
 				SkgbOfflineProcessor processor = new SkgbOfflineProcessor(app).in(inFile);
 				
@@ -138,6 +127,9 @@ class Gui implements ActionListener {
 				processor.out(outFile);
 //				app.process(inFile, outFile);
 				
+			}
+			else if (event.getSource() instanceof WindowEvent && event.getActionCommand() == "close") {
+				System.exit(0); // expedite (debug)
 			}
 			else {
 				throw new UnsupportedOperationException();
@@ -172,7 +164,7 @@ class Gui implements ActionListener {
 //					if (exception instanceof DebitDataException) {
 //						text = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.";
 //					}
-					text += "\n\n_______\n(Die folgenden Angaben können der Fehlersuche dienen.)\n\n" + abbreviatedStackTrace(exception);
+					text += "\n\n_______\n(Die folgenden Angaben können der Fehlersuche dienen.)\n\n" + Debug.abbreviatedStackTrace(exception, myPackageLeader);
 					if (message != null) {
 						text = message;
 					}
@@ -180,41 +172,6 @@ class Gui implements ActionListener {
 				}
 			});
 		}
-	}
-	
-	private static String abbreviatedStackTrace (final Throwable throwable) {
-		final int maxStackTraces = 12;
-		
-		final StringBuilder builder = new StringBuilder();
-		builder.append( throwable.getClass().getCanonicalName() );
-		if (throwable.getMessage() != null) {
-			builder.append(":\n      ");
-			builder.append(throwable.getMessage());
-		}
-		
-		final StackTraceElement[] stack = throwable.getStackTrace();
-		boolean myPackageFound = false;
-		int i = 0;
-		for ( ; i < stack.length && i < maxStackTraces; i++) {
-			final String trace = stack[i].toString();
-			builder.append("\n- ");
-			builder.append(trace);
-			if (myPackageFound && ! trace.startsWith(myPackageLeader)) {
-				break;
-			}
-			if (! myPackageFound && trace.startsWith(myPackageLeader)) {
-				myPackageFound = true;
-			}
-		}
-		if (i < maxStackTraces - 1) {
-			builder.append("\n… " + (stack.length - i - 1) + " more");
-		}
-		
-		if (throwable.getCause() != null) {
-			builder.append("\n\nCaused by:\n");
-			builder.append(abbreviatedStackTrace(throwable.getCause()));
-		}
-		return builder.toString();
 	}
 	
 	public static void main (final String[] args) {

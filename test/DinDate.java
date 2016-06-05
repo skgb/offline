@@ -1,4 +1,4 @@
-// $Id: DinDate.java $
+// $Id$
 
 package test;
 
