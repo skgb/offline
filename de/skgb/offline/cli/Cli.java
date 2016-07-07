@@ -1,4 +1,8 @@
-// $Id$
+/* $Id$
+ * 
+ * Copyright (c) 2014 Arne Johannessen
+ * All rights reserved. See LICENSE for details.
+ */
 
 
 // javac -cp lib/opencsv-2.3.jar -encoding UTF-8 Main.java

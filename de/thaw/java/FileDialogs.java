@@ -1,4 +1,8 @@
-// $Id$
+/* $Id$
+ * 
+ * Copyright (c) 2016 Arne Johannessen
+ * All rights reserved. See LICENSE for details.
+ */
 
 package de.thaw.java;
 

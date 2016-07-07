@@ -1,4 +1,8 @@
-// $Id$
+/* $Id$
+ * 
+ * Copyright (c) 2014-2016 Arne Johannessen
+ * All rights reserved. See LICENSE for details.
+ */
 
 package de.skgb.offline.gui;
 
