@@ -144,7 +144,12 @@ class Gui implements ActionListener {
 	}
 	
 	private void reportException (final Exception exception) {
-		reportException(exception, null);
+		String message = "Es ist ein Problem aufgetreten, möglicherweise wegen eines Programmierfehlers.\nBitte wende Dich an den IT-Ausschuss der SKGB.";
+//		if (exception instanceof DebitDataException) {
+//			message = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.";
+//					}
+		message += "\n\n_______\n(Die folgenden Angaben können der Fehlersuche dienen.)\n\n" + Debug.abbreviatedStackTrace(exception, myPackageLeader);
+		reportException(exception, message);
 	}
 	
 	private void reportException (final Exception exception, final String message) {
@@ -160,15 +165,7 @@ class Gui implements ActionListener {
 			}
 			SwingUtilities.invokeLater( new Runnable () {
 				public void run () {
-					String text = "Es ist ein Problem aufgetreten, möglicherweise wegen eines Programmierfehlers.\nBitte wende Dich an den IT-Ausschuss der SKGB.";
-//					if (exception instanceof DebitDataException) {
-//						text = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.";
-//					}
-					text += "\n\n_______\n(Die folgenden Angaben können der Fehlersuche dienen.)\n\n" + Debug.abbreviatedStackTrace(exception, myPackageLeader);
-					if (message != null) {
-						text = message;
-					}
-					JOptionPane.showMessageDialog(window, text, "SKGB-offline: Fehler", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(window, message, "SKGB-offline: Fehler", JOptionPane.ERROR_MESSAGE);
 				}
 			});
 		}
