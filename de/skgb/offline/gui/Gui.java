@@ -36,7 +36,7 @@ class Gui implements ActionListener {
 	 * package. At some point this field should be moved over there so that
 	 * we have a grand unified version number for the whole project.
 	 */
-	static final String version = "0.5.1";
+	static final String version = "0.5.2"; 
 	
 	// used for stack trace abbreviation
 	private static final String myPackageLeader = "de.skgb.";
@@ -50,6 +50,8 @@ class Gui implements ActionListener {
 	CsvFileDialog fileDialog;
 	
 	Gui () {
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "SKGB-offline");  // shouldn't be necessary in Java 1.7+
+		System.setProperty("apple.awt.application.name", "SKGB-offline");
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
@@ -132,7 +134,8 @@ class Gui implements ActionListener {
 //				app.process(inFile, outFile);
 				
 			}
-			else if (event.getSource() instanceof WindowEvent && event.getActionCommand() == "close") {
+			else if (event.getSource() instanceof WindowEvent && event.getActionCommand() == "close" || event.getSource() == window.closeMenuItem) {
+				window.dispose();
 				System.exit(0); // expedite (debug)
 			}
 			else {

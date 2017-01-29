@@ -17,7 +17,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Label;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.MenuShortcut;
 import java.awt.Panel;
 import java.awt.Rectangle;
 import java.awt.TextField;
@@ -25,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Method;
 import java.net.URL;
 import javax.imageio.ImageIO;
 
@@ -68,14 +74,19 @@ import javax.imageio.ImageIO;
 class GuiWindow extends Frame implements Runnable {
 	
 	
+	/* The Java UI model is a poor match for any version of Mac OS. To provide
+	 * a reasonable user experience on the Mac, there is no alternative to
+	 * special-case parts of the UI based on the OS.
+	 */
+	static final boolean isMac = String.valueOf( System.getProperty("os.name") ).toLowerCase().startsWith("mac");
+	
+	
 	/**
 	 * Height of the titlebar. Used for positioning of widgets, as AWT includes
 	 * the titlebar in its total dimensions, which makes cross-platform
 	 * positioning more difficult.
 	 */
-//	static int titlebarHeight = 22;  // Mac OS X 10.6
-//	static int titlebarHeight = 29;  // Windows XP
-	static final int titlebarHeight = 23;
+	static final int titlebarHeight = isMac ? 22 : 26;
 	
 	
 	/**
@@ -113,6 +124,9 @@ class GuiWindow extends Frame implements Runnable {
 	/** Display the GUI version number. */
 	Label versionLabel;
 	
+	/** Close Window menu item (used on OS X). */
+	MenuItem closeMenuItem;
+	
 	
 	/**
 	 * Set up the window.
@@ -124,11 +138,11 @@ class GuiWindow extends Frame implements Runnable {
 		setLocation(300, 100);
 		setSize(windowSize);
 		setResizable(false);
-//		setIconImage();
+		setAppIcon();
+		setMenuBar(listener);
 		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing (WindowEvent event) {
-				dispose();
 				listener.actionPerformed(new ActionEvent(event, event.getID(), "close"));
 			}
 		});
@@ -154,14 +168,58 @@ class GuiWindow extends Frame implements Runnable {
 		debitFileButton.setEnabled(false);
 		debitFileButton.addActionListener(listener);
 		add(debitFileButton);
-		
+	}
+	
+	
+	/**
+	 * Sets this window's menu bar. As this app currently runs with one window
+	 * only and closing that window quits the app, there is no need to have a
+	 * no-window menu bar for the Mac at this time.
+	 * @param listener the ActionListener to send menu item selections to
+	 */
+	private void setMenuBar (final ActionListener listener) {
+		if (isMac) {
+			System.setProperty("com.apple.macos.useScreenMenuBar", "true");  // shouldn't be necessary in AWT
+			System.setProperty("apple.laf.useScreenMenuBar", "true");  // shouldn't be necessary in AWT
+			MenuBar menuBar = new MenuBar();
+			Menu fileMenu = new Menu("Ablage");
+			closeMenuItem = new MenuItem("Schließen", new MenuShortcut('W'));
+			closeMenuItem.addActionListener(listener);
+			fileMenu.add(closeMenuItem);
+			menuBar.add(fileMenu);
+			setMenuBar(menuBar);
+		}
+		else {
+			// Windows: close menu item is provided by the OS; no menu bar necessary
+			// other OSs: ?
+		}
+	}
+	
+	
+	/**
+	 * Displays the SKGB logo as application icon.
+	 */
+	private void setAppIcon () {
 		try {
 			final URL url = ClassLoader.getSystemResource("winicon.png");
 			if (url == null) {
-//				new RuntimeException().printStackTrace();  // :DEBUG:
 				return;  // non-critical resource; ignore
 			}
-			setIconImage(ImageIO.read(url));
+			Image icon = ImageIO.read(url);
+			setIconImage(icon);
+			
+			/* Because Mac OS uses application icons rather than window icons,
+			 * the standard AWT method doesn't do anything. The classes Apple
+			 * provided are not available on other systems, so we use
+			 * reflection. Unless this isn't a Mac, in which case we bail.
+			 */
+			if (! isMac) {
+				return;
+			}
+			Class<?> appClass = Class.forName("com.apple.eawt.Application");
+			Method setDockIconImage = appClass.getMethod("setDockIconImage", Image.class);
+			Object app = appClass.getMethod("getApplication").invoke(null);
+			setDockIconImage.invoke(app, icon);
 		}
 		catch (Exception exception) {
 			exception.printStackTrace();
