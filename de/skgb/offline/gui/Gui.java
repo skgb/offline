@@ -32,14 +32,6 @@ import javax.swing.UIManager;
  */
 class Gui implements ActionListener {
 	
-	/**
-	 * The GUI version of this app. Note that this version number does not
-	 * necessarily reflect updates to the backend in the de.skgb.offline
-	 * package. At some point this field should be moved over there so that
-	 * we have a grand unified version number for the whole project.
-	 */
-	static final String version = "0.5.2"; 
-	
 	// used for stack trace abbreviation
 	private static final String myPackageLeader = "de.skgb.";
 	
@@ -50,6 +42,7 @@ class Gui implements ActionListener {
 	GuiWindow window;
 	
 	CsvFileDialog fileDialog;
+	
 	
 	Gui () {
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "SKGB-offline");  // shouldn't be necessary in Java 1.7+
@@ -62,7 +55,7 @@ class Gui implements ActionListener {
 		}
 		
 		window = new GuiWindow(this);
-		window.versionLabel.setText("Version " + version);
+		window.versionLabel.setText("Version " + SkgbOffline.version);
 		window.run();
 		
 		prefs = new Preferences();
@@ -80,6 +73,7 @@ class Gui implements ActionListener {
 		fileDialog = new CsvFileDialog(window);
 	}
 	
+	
 	void loadMandateStore (File file) {
 		try {
 			SkgbOffline app = new SkgbOffline(file);
@@ -95,6 +89,31 @@ class Gui implements ActionListener {
 		window.updateInfoPanel(app.mandateStore);
 	}
 	
+	
+	void processDebitFile () throws IOException {
+		if (app == null) {
+			throw new IllegalStateException();
+		}
+		
+		String path = prefs.debitFileFolder();
+		File inFile = fileDialog.open("Lastschriftdatei öffnen", path);
+		if (inFile == null) {
+			return;
+		}
+		prefs.debitFileFolder(inFile.getParent());
+		
+		SkgbOfflineProcessor processor = new SkgbOfflineProcessor(app).in(inFile);
+		
+		String outFileName = inFile.getName() != null ? inFile.getName() : "out.csv";
+		File outFile = fileDialog.save("Lastschriftdatei mit Kontodaten sichern", outFileName);
+		if (outFile == null) {
+			return;
+		}
+		
+		processor.out(outFile);
+	}
+	
+	
 	public void actionPerformed (ActionEvent event) {
 		try {
 			if (event.getSource() == window.mandateStoreButton) {
@@ -108,27 +127,7 @@ class Gui implements ActionListener {
 				
 			}
 			else if (event.getSource() == window.debitFileButton) {
-				if (app == null) {
-					throw new IllegalStateException();
-				}
-				
-				String path = prefs.debitFileFolder();
-				File inFile = fileDialog.open("Lastschriftdatei öffnen", path);
-				if (inFile == null) {
-					return;
-				}
-				prefs.debitFileFolder(inFile.getParent());
-				
-				SkgbOfflineProcessor processor = new SkgbOfflineProcessor(app).in(inFile);
-				
-				String outFileName = inFile.getName() != null ? inFile.getName() : "out.csv";
-				File outFile = fileDialog.save("Lastschriftdatei mit Kontodaten sichern", outFileName);
-				if (outFile == null) {
-					return;
-				}
-				
-				processor.out(outFile);
-//				app.process(inFile, outFile);
+				processDebitFile();
 				
 			}
 			else if (event.getSource() instanceof WindowEvent && event.getActionCommand() == "close" || event.getSource() == window.closeMenuItem) {
@@ -158,6 +157,7 @@ class Gui implements ActionListener {
 	}
 	
 	private void reportException (final Exception exception) {
+	
 		String message = "Es ist ein Problem aufgetreten, möglicherweise wegen eines Programmierfehlers.\nBitte wende Dich an den IT-Ausschuss der SKGB.";
 //		if (exception instanceof DebitDataException) {
 //			message = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.";
@@ -167,6 +167,7 @@ class Gui implements ActionListener {
 	}
 	
 	private void reportException (final Exception exception, final String message) {
+	
 		exception.printStackTrace();
 		System.out.println();
 		
@@ -184,6 +185,7 @@ class Gui implements ActionListener {
 			});
 		}
 	}
+	
 	
 	public static void main (final String[] args) {
 		new Gui();

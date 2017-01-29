@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Collections;
 
 
 /**
@@ -24,20 +25,27 @@ public final class SkgbOffline {
 	final static String paymentJob = "SEPA-ÜB";
 	final static Map<String, String> debitHeader;
 	static {
-		debitHeader = new TreeMap<String, String>();
-		debitHeader.put("accountHolder", "Empfängername");
-		debitHeader.put("iban", "IBAN");
-		debitHeader.put("bic", "BIC");
-		debitHeader.put("jobType", "Auftragsart");
-		debitHeader.put("creditorId", "GläubigerID");
-		debitHeader.put("uniqueReference", "MandatsID");
-		debitHeader.put("signatureDate", "Mandatsdatum");
-		debitHeader.put("comment", "Kommentar");
+		final Map<String, String> map = new TreeMap<String, String>();
+		map.put("accountHolder", "Empfängername");
+		map.put("iban", "IBAN");
+		map.put("bic", "BIC");
+		map.put("jobType", "Auftragsart");
+		map.put("creditorId", "GläubigerID");
+		map.put("uniqueReference", "MandatsID");
+		map.put("signatureDate", "Mandatsdatum");
+		map.put("comment", "Kommentar");
+		debitHeader = Collections.unmodifiableMap(map);
 	}
 	
 	
+	/**
+	 * The grand unified version number of this app.
+	 */
+	public static final String version = "0.5.2";
+	
+	
 	/** SEPA CDD creditor ID of the SKGB */
-	final static String creditorId = "DE67SEG00000074132";
+	static final String creditorId = "DE67SEG00000074132";
 	
 	
 	/** The mandate store, as initialised by the constructor. */

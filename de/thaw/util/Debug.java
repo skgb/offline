@@ -9,6 +9,10 @@ package de.thaw.util;
 
 public class Debug {
 	
+	// static only
+	private Debug () {
+	}
+	
 	public static String abbreviatedStackTrace (final Throwable throwable, final String myPackageLeader) {
 		final int maxStackTraces = 12;
 		
