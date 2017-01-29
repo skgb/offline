@@ -17,11 +17,13 @@ import de.thaw.util.Debug;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
 /**
@@ -91,11 +93,6 @@ class Gui implements ActionListener {
 		window.mandateStoreField.setText(file.toString());
 		window.debitFileButton.setEnabled(! app.mandateStore.hashMissing && app.mandateStore.error == null);
 		window.updateInfoPanel(app.mandateStore);
-		
-//		System.out.println(app.mandateStore.hashMissing);
-//		System.out.println(app.mandateStore.hashMatches);
-//		System.out.println(app.mandateStore.hashBase64);
-//		System.out.println(app.mandateStore.updated);
 	}
 	
 	public void actionPerformed (ActionEvent event) {
@@ -137,6 +134,16 @@ class Gui implements ActionListener {
 			else if (event.getSource() instanceof WindowEvent && event.getActionCommand() == "close" || event.getSource() == window.closeMenuItem) {
 				window.dispose();
 				System.exit(0); // expedite (debug)
+				
+			}
+			else if (event.getSource() instanceof MouseEvent && event.getActionCommand() == "click") {
+				MouseEvent mouseEvent = (MouseEvent)event.getSource();
+				if (mouseEvent.getSource() == window.versionLabel && mouseEvent.isAltDown() && window.isMac) {  // this functionality is not required on other OSs right now
+					JTextArea text = new JTextArea(app != null ? app.mandateStore.hash() : null);
+					text.setEditable(false);
+					JOptionPane.showMessageDialog(window, text, "Hash", JOptionPane.INFORMATION_MESSAGE);
+				}
+				
 			}
 			else {
 				throw new UnsupportedOperationException();

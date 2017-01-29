@@ -28,6 +28,8 @@ import java.awt.Rectangle;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.Method;
@@ -149,6 +151,11 @@ class GuiWindow extends Frame implements Runnable {
 		
 		addMasthead();
 		addExplanations();
+		versionLabel.addMouseListener(new MouseAdapter() {
+			public void mouseClicked (MouseEvent event) {
+				listener.actionPerformed(new ActionEvent(event, event.getID(), "click"));
+			}
+		});
 		
 		addLabel(17, 346, 128, 17, "Mandatssammlung:");
 		mandateStoreField = new TextField();

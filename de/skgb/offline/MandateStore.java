@@ -138,6 +138,15 @@ public final class MandateStore {
 	
 	
 	/**
+	 * The signature hash as calculated from the actual data.
+	 * @return the value of the <code>hashBase64</code> field
+	 */
+	public String hash () {
+		return hashBase64;
+	}
+	
+	
+	/**
 	 * Tries to find any data errors in the mandates.
 	 */
 	public void validate () {

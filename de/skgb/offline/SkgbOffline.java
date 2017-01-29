@@ -57,10 +57,6 @@ public final class SkgbOffline {
 	public SkgbOffline (final File mandateFile) throws IOException {
 		this.mandateFile = mandateFile;
 		mandateStore = new MandateStore( MutableCsvFile.read(mandateFile) );
-//		System.out.println(mandateStore.hashMissing);
-//		System.out.println(mandateStore.hashMatches);
-		System.out.println(mandateStore.hashBase64);
-//		System.out.println(mandateStore.updated);
 	}
 	
 	
