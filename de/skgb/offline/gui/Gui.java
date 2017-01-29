@@ -30,7 +30,7 @@ import javax.swing.UIManager;
  * The main class for running this app as GUI. This is a controller class,
  * intended to only contain glue code.
  */
-class Gui implements ActionListener {
+class Gui implements ActionListener, Thread.UncaughtExceptionHandler {
 	
 	// used for stack trace abbreviation
 	private static final String myPackageLeader = "de.skgb.";
@@ -69,6 +69,8 @@ class Gui implements ActionListener {
 				e.printStackTrace();
 			}
 		}
+		
+		new VersionCheck(this).start();
 		
 		fileDialog = new CsvFileDialog(window);
 	}
@@ -156,8 +158,8 @@ class Gui implements ActionListener {
 		}
 	}
 	
-	private void reportException (final Exception exception) {
 	
+	private void reportException (final Throwable exception) {
 		String message = "Es ist ein Problem aufgetreten, möglicherweise wegen eines Programmierfehlers.\nBitte wende Dich an den IT-Ausschuss der SKGB.";
 //		if (exception instanceof DebitDataException) {
 //			message = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.";
@@ -166,8 +168,8 @@ class Gui implements ActionListener {
 		reportException(exception, message);
 	}
 	
-	private void reportException (final Exception exception, final String message) {
 	
+	private void reportException (final Throwable exception, final String message) {
 		exception.printStackTrace();
 		System.out.println();
 		
@@ -184,6 +186,11 @@ class Gui implements ActionListener {
 				}
 			});
 		}
+	}
+	
+	
+	public void uncaughtException (Thread t, Throwable e) {
+		reportException(e);
 	}
 	
 	

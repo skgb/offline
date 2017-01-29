@@ -1,18 +1,15 @@
 ﻿- properties speicherort: falls nicht existent, lokaler pfad im selben ordner
-- mac-gui, menü, v. a. close
 - about-box (evtl. über klick auf stander auch in windows?)
-- bundle
-- kann aufs bundle verzichtet und alle details ins jar eingebaut werden?
-- app icon mac
 - doku
 - MandateStore-konstruktor überarbieten, insb. parsen der signature
 - polishing, allgemein
-
-- weg finden, die pruefsumme "einfach" zu erzeugen (modifier-klick waere vielleicht gut)
-  derzeit: ausgabe auf stdout im constructor
 - gutes error-handling (möglichkeit, fehler in der eingabedatei, leeren feldern, fehlenden mandaten etc zu überspringen o. ä.?)
+- PGP-entschlüsselung + lokale key-erzeugung mit fingerprint-abgleich
 
 KNOWN BUGS:
 - "key doppelt vorhanden", wenn MutableCvsFile über unnötige leere Spalten rechts am Ende stolpert
 
-changes 0.5 -> 0.5.1: only docs and refactoring
+OS X:
+- bundle
+http://alvinalexander.com/java/java-mac-osx-about-preferences-quit-application-adapter
+https://www.google.de/search?q=OSXAdapter.java+apple
