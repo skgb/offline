@@ -213,14 +213,13 @@ class GuiWindow extends Frame implements Runnable {
 				return;  // non-critical resource; ignore
 			}
 			Image icon = ImageIO.read(url);
-			setIconImage(icon);
-			
 			/* Because Mac OS uses application icons rather than window icons,
-			 * the standard AWT method doesn't do anything. The classes Apple
-			 * provided are not available on other systems, so we use
-			 * reflection. Unless this isn't a Mac, in which case we bail.
+			 * the standard AWT setIconImage() method shouldn't be used. The
+			 * classes Apple provides are not available on other systems, so
+			 * we have to use reflection on a Mac.
 			 */
 			if (! isMac) {
+				setIconImage(icon);
 				return;
 			}
 			Class<?> appClass = Class.forName("com.apple.eawt.Application");
