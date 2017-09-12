@@ -22,8 +22,8 @@ import javax.swing.SwingUtilities;
 class VersionCheck implements Runnable {
 	
 	
-	private final String checkUri = "http://intern.skgb.de/skgb-offline/version";
-	private final String updateUri = "http://intern.skgb.de/skgb-offline/update";
+	private final String checkUri = "https://intern.skgb.de/skgb-offline/version";
+	private final String updateUri = "https://intern.skgb.de/skgb-offline/update";
 	
 	private final Gui gui;
 	
