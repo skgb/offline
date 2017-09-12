@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.JTextArea;
@@ -107,6 +108,7 @@ class Gui implements ActionListener, Thread.UncaughtExceptionHandler {
 		SkgbOfflineProcessor processor = new SkgbOfflineProcessor(app).in(inFile);
 		
 		String outFileName = inFile.getName() != null ? inFile.getName() : "out.csv";
+		outFileName = Pattern.compile("(?: Buchung [0-9]+)?\\.csv$").matcher(outFileName).replaceFirst(" Bankdaten.csv");
 		File outFile = fileDialog.save("Lastschriftdatei mit Kontodaten sichern", outFileName);
 		if (outFile == null) {
 			return;

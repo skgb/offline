@@ -41,7 +41,7 @@ public final class SkgbOffline {
 	/**
 	 * The grand unified version number of this app.
 	 */
-	public static final String version = "0.6.1";
+	public static final String version = "0.6.2";
 	
 	
 	/** SEPA CDD creditor ID of the SKGB */
