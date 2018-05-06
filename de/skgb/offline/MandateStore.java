@@ -58,7 +58,11 @@ public final class MandateStore {
 	MandateStore (final MutableCsvFile csvFile) {
 		error = csvFile.error;
 		
-		final String signature = csvFile.header.get(csvFile.header.size() - 1);
+		/* We hard-code the signature's column here starting from the left.
+		 * This both gives the user the opportunity to add custom information
+		 * further to the right as well as it makes the format more robust.
+		 */
+		final String signature = csvFile.header.get(Math.min(5, csvFile.header.size() - 1));
 		
 		final List<Mandate> mandates = new ArrayList<Mandate>( csvFile.data.size() );
 		// :BUG: the mandates order isn't well-defined coming from MutableCsvFile, but we need that a constant order for hash comparison

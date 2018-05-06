@@ -25,6 +25,7 @@ public class Backend1 {
 		writeMandateStoreInfo(writer, inPath + "/mandates-valid-extraline.csv");
 		writeMandateStoreInfo(writer, inPath + "/mandates-valid-commas.csv");
 		writeMandateStoreInfo(writer, inPath + "/mandates-onecol.csv");
+		writeMandateStoreInfo(writer, inPath + "/mandates-extracol.csv");
 		
 		final File mandateFile = new File(inPath + "/mandates-valid.csv");
 		final File debitInFile = new File(inPath + "/debit-simplified.csv");

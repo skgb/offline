@@ -97,3 +97,12 @@ hashBase64 (calculated): xVgmYKQm/jbaUV3IZz0mYQ==
 mandates.size: 0
 mandates: { }
 
+Loading mandate store: test/backend1/mandates-extracol.csv
+updated: 2018-03-17
+error: null
+hashMissing: false
+hashMatches: false
+hashBase64 (calculated): 99rIHmWGLqzDzZQJXtni9A==
+mandates.size: 1
+mandates: { Test1-ExtraCol }
+
