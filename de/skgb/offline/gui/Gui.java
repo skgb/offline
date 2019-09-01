@@ -49,12 +49,15 @@ class Gui implements ActionListener, Thread.UncaughtExceptionHandler {
 		catch (Exception e) {
 			// ignore (keep default LAF)
 		}
+		prefs = new Preferences();
 		
 		window = new GuiWindow(this);
+		if (prefs.advancedOptions()) {
+			window.addAdvancedMenu(this);
+		}
 		window.versionLabel.setText("Version " + SkgbOffline.version);
 		window.run();
 		
-		prefs = new Preferences();
 		File file = prefs.mandateStore();
 		if (file != null) {
 			// try to load the mandate store given in the preferences; if that fails, just move on and leave the user to load it manually
@@ -134,12 +137,15 @@ class Gui implements ActionListener, Thread.UncaughtExceptionHandler {
 				System.exit(0); // expedite (debug)
 				
 			}
+			else if (event.getSource() == window.advancedMenuItems.get("hash")) {
+				JTextArea text = new JTextArea(app != null ? app.mandateStore.hash() : null);
+				text.setEditable(false);
+				JOptionPane.showMessageDialog(window, text, "Hash", JOptionPane.INFORMATION_MESSAGE);
+			}
 			else if (event.getSource() instanceof MouseEvent && event.getActionCommand() == "click") {
 				MouseEvent mouseEvent = (MouseEvent)event.getSource();
 				if (mouseEvent.getSource() == window.versionLabel && mouseEvent.isAltDown() && window.isMac) {  // this functionality is not required on other OSs right now
-					JTextArea text = new JTextArea(app != null ? app.mandateStore.hash() : null);
-					text.setEditable(false);
-					JOptionPane.showMessageDialog(window, text, "Hash", JOptionPane.INFORMATION_MESSAGE);
+					throw new UnsupportedOperationException("'Erweitert'-Menü benutzen!");
 				}
 				
 			}

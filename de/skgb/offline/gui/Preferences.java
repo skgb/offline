@@ -22,6 +22,7 @@ class Preferences extends de.thaw.util.Preferences {
 	
 	static final String MANDATE_STORE_KEY = "MandateStore";
 	static final String DEBIT_FILE_FOLDER_KEY = "LastDebitFileDirectory";
+	static final String ADVANCED_KEY = "EnableAdvancedOptions";
 	
 	
 	/**
@@ -131,6 +132,15 @@ class Preferences extends de.thaw.util.Preferences {
 	void debitFileFolder (final String path) {
 		set(DEBIT_FILE_FOLDER_KEY, path);
 		save();
+	}
+	
+	
+	/**
+	 * Whether the advanced options UI is enabled.
+	 * @return <code>false</code> as default value if preference not set
+	 */
+	boolean advancedOptions () {
+		return "true".equals(get(ADVANCED_KEY));
 	}
 	
 	

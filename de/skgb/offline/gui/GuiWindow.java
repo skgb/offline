@@ -34,6 +34,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Map;
+import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 
@@ -129,6 +131,9 @@ class GuiWindow extends Frame implements Runnable {
 	/** Close Window menu item (used on OS X). */
 	MenuItem closeMenuItem;
 	
+	/** Advanced/experimental options menu items. */
+	Map<String,MenuItem> advancedMenuItems = new HashMap<String,MenuItem>();
+	
 	
 	/**
 	 * Set up the window.
@@ -200,6 +205,24 @@ class GuiWindow extends Frame implements Runnable {
 			// Windows: close menu item is provided by the OS; no menu bar necessary
 			// other OSs: ?
 		}
+	}
+	
+	
+	void addAdvancedMenu (final ActionListener listener) {
+		advancedMenuItems.put("hash", new MenuItem("Hash berechnen"));
+		advancedMenuItems.put("throw", new MenuItem("Ausnahme werfen"));
+		Menu advancedMenu = new Menu("Erweitert");
+		advancedMenu.add(advancedMenuItems.get("hash"));
+		advancedMenu.add(new MenuItem("-"));
+		advancedMenu.add(advancedMenuItems.get("throw"));
+		
+		for (String key : advancedMenuItems.keySet()) {
+			advancedMenuItems.get(key).addActionListener(listener);
+		}
+		if (getMenuBar() == null) {
+			setMenuBar(new MenuBar());
+		}
+		getMenuBar().add(advancedMenu);
 	}
 	
 	
