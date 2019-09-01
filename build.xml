@@ -217,6 +217,6 @@
 	
 	
 	
-	<target name="all" depends="clean, build, doc, test, package" />
+	<target name="all" depends="clean, build, doc, package, test" />
 	
 </project>
