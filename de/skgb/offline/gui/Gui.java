@@ -12,9 +12,7 @@ import de.skgb.offline.MandateDataException;
 import de.skgb.offline.NoMandateException;
 import de.skgb.offline.SkgbOffline;
 import de.skgb.offline.SkgbOfflineProcessor;
-import de.thaw.util.Debug;
 
-import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -32,9 +30,6 @@ import javax.swing.UIManager;
  * intended to only contain glue code.
  */
 class Gui implements ActionListener, Thread.UncaughtExceptionHandler {
-	
-	// used for stack trace abbreviation
-	private static final String myPackageLeader = "de.skgb.";
 	
 	SkgbOffline app;
 	
@@ -153,46 +148,17 @@ class Gui implements ActionListener, Thread.UncaughtExceptionHandler {
 			}
 		}
 		catch (NoMandateException e) {
-			reportException(e, "Buchen nicht möglich\n\nDie Lastschriftdatei enthält eine Lastschrift für das Mandat '" + e.uniqueReference() + "',\nwelches nicht in der Mandatssammlung vom " + app.mandateStore.updated + " ist.");
+			String message = "Buchen nicht möglich\n\nDie Lastschriftdatei enthält eine Lastschrift für das Mandat '" + e.uniqueReference() + "',\nwelches nicht in der Mandatssammlung vom " + app.mandateStore.updated + " ist.";
+			new IssueReport(this, e, message);
 		}
 		catch (Exception e) {
-			reportException(e);
-		}
-	}
-	
-	
-	private void reportException (final Throwable exception) {
-		String message = "Es ist ein Problem aufgetreten, möglicherweise wegen eines Programmierfehlers.\nBitte wende Dich an den IT-Ausschuss der SKGB.";
-//		if (exception instanceof DebitDataException) {
-//			message = "Die zuvor geöffnete Lastschriftdatei konnte nicht gelesen werden;\nsie könnte defekt sein. Bitte wende Dich an die SKGB-Geschäftsführung.";
-//					}
-		message += "\n\n_______\n(Die folgenden Angaben können der Fehlersuche dienen.)\n\n" + Debug.abbreviatedStackTrace(exception, myPackageLeader);
-		reportException(exception, message);
-	}
-	
-	
-	private void reportException (final Throwable exception, final String message) {
-		exception.printStackTrace();
-		System.out.println();
-		
-		if (! GraphicsEnvironment.isHeadless()) {
-			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			}
-			catch (Exception e) {
-				// ignore (keep default LAF)
-			}
-			SwingUtilities.invokeLater( new Runnable () {
-				public void run () {
-					JOptionPane.showMessageDialog(window, message, "SKGB-offline: Fehler", JOptionPane.ERROR_MESSAGE);
-				}
-			});
+			new IssueReport(this, e);
 		}
 	}
 	
 	
 	public void uncaughtException (Thread t, Throwable e) {
-		reportException(e);
+		new IssueReport(this, e);
 	}
 	
 	

@@ -13,8 +13,19 @@ public class Debug {
 	private Debug () {
 	}
 	
+	
 	public static String abbreviatedStackTrace (final Throwable throwable, final String myPackageLeader) {
-		final int maxStackTraces = 12;
+		int maxStackTraces = 12;
+		return stackTrace(throwable, myPackageLeader, maxStackTraces);
+	}
+	
+	
+	public static String stackTrace (final Throwable throwable) {
+		return stackTrace(throwable, "", 100);
+	}
+	
+	
+	private static String stackTrace (final Throwable throwable, final String myPackageLeader, final int maxStackTraces) {
 		
 		final StringBuilder builder = new StringBuilder();
 		builder.append( throwable.getClass().getCanonicalName() );
@@ -37,13 +48,13 @@ public class Debug {
 				myPackageFound = true;
 			}
 		}
-		if (i < maxStackTraces - 1) {
+		if (i < maxStackTraces - 1 && stack.length - i - 1 > 0) {
 			builder.append("\n… " + (stack.length - i - 1) + " more");
 		}
 		
 		if (throwable.getCause() != null) {
 			builder.append("\n\nCaused by:\n");
-			builder.append(abbreviatedStackTrace(throwable.getCause(), myPackageLeader));
+			builder.append(stackTrace(throwable.getCause(), myPackageLeader, maxStackTraces));
 		}
 		return builder.toString();
 	}
