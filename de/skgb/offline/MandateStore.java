@@ -7,6 +7,8 @@
 package de.skgb.offline;
 
 
+import de.thaw.util.Base64;
+
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +19,6 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import javax.xml.bind.DatatypeConverter;
 
 
 /**
@@ -112,7 +113,7 @@ public final class MandateStore {
 			// macintosh charset: historical reasons
 			final byte[] data = hashBuilder.toString().getBytes(Charset.forName("x-MacRoman"));
 			final byte[] hash = MessageDigest.getInstance("MD5").digest(data);
-			return DatatypeConverter.printBase64Binary(hash);
+			return Base64.encodeToString(hash);
 		}
 		catch (NoSuchAlgorithmException e) {
 			// this shouldn't happen as the MD5 algorithm is supposed to be built-in
