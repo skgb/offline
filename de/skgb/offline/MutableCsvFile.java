@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -74,6 +75,28 @@ final class MutableCsvFile {
 	
 	
 	/**
+	 * Determines whether the file can be decoded as UTF-8. If that is the
+	 * case, it is more than likely that it is in fact UTF-8 (because of the
+	 * encoding's structure).
+	 * 
+	 * @param file the CSV file to consider
+	 * @return true if the file represents a valid UTF-8 byte stream
+	 * @throws NullPointerException if file == null
+	 * @throws IOException .
+	 */
+	static boolean isUtf8 (final File file) throws IOException {
+		final Charset utf8 = Charset.forName("UTF-8");
+		final FileInputStream stream = new FileInputStream(file);
+		// this is a bit wasteful on memory, but it doesn't really matter for us
+		final byte[] input = new byte[ (int) stream.getChannel().size() ];
+		stream.read(input);
+		final String decoded = new String(input, utf8);
+		final byte[] output = decoded.getBytes(utf8);
+		return Arrays.equals(input, output);
+	}
+	
+	
+	/**
 	 * Read data from disk.
 	 * <p>
 	 * The column order of the CSV file will be reflected in the header field.
@@ -85,7 +108,9 @@ final class MutableCsvFile {
 	 * @see CSVReader
 	 */
 	static MutableCsvFile read (final File file) throws IOException {
-		Reader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
+		String readCharset = isUtf8(file) ? "UTF-8" : charset;
+		
+		Reader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), readCharset));
 		CSVReader csvReader = new CSVReader( fileReader, separator, quote );
 		
 		String[] csvHeader = csvReader.readNext();
@@ -95,11 +120,16 @@ final class MutableCsvFile {
 			// try another separator if there seem to be fewer columns than expected
 			// (parsing with wrong separator may dump everything into column 1)
 			csvReader.close();
-			fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
+			fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), readCharset));
 			csvReader = new CSVReader( fileReader, ',', quote );  // RFC 4180
 			csvHeader = csvReader.readNext();
 		}
 		error = csvHeader.length < minColCount ? tooFewColsMessage : null;  // report if still too few
+		
+		// remove BOM
+		if (csvHeader[0].charAt(0) == '\ufeff') {
+			csvHeader[0] = csvHeader[0].substring(1);
+		}
 		
 		for (int i = 0; i < csvHeader.length; i++) {
 			csvHeader[i] = csvHeader[i].intern();

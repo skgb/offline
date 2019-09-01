@@ -1,0 +1,7 @@
+"Empfängername";"Kontonummer";"Bankleitzahl";"IBAN";"BIC";"Verwendungszweck";"Betrag";"Auftragsart";"Textschlüssel";"TSErgänzung";"Kundenreferenz";"GläubigerID";"MandatsID";"Mandatsdatum";"Mandatstyp";"Ausführungsdatum";"Kommentar"
+"TEST Åsa Schröder";"";"";"DE66100000000000000101";"MARKDEF1100";"Lastschrift";"0,01";"SEPA-LAS";"";"";"A";"DE67SEG00000074132";"Test3-Text";"01.01.1999";"frst";"";"a / simpler Fließtext"
+"ÄÖÜäöüß";"";"";"DE95000000000000000102";"MARKDEF1100";"Lastschrift";"0,02";"SEPA-LAS";"";"";"B";"DE67SEG00000074132";"Test3-Chars";"02.01.1999";"rcur";"";"b / übliche Buchstaben"
+"ÆØÅæøå ÿ ªº µ";"";"";"DE68000000000000000103";"MARKDEF1100";"Lastschrift";"0,03";"SEPA-LAS";"";"";"C";"DE67SEG00000074132";"Test3-8bit";"03.01.1999";"fnal";"";"c / unübliche Buchstaben, voll 8-bit-kompatibel"
+"Ýý þÐÞð";"";"";"DE82100000000000000104";"MARKDEF1100";"Lastschrift";"0,04";"SEPA-LAS";"";"";"D";"DE67SEG00000074132";"Test3-win";"04.01.1999";"ooff";"";"d / unübliche Buchstaben, nicht in macintosh"
+"? Ÿ ?? ????";"";"";"DE55100000000000000105";"MARKDEF1100";"Lastschrift";"0,05";"SEPA-LAS";"";"";"E";"DE67SEG00000074132";"Test3-mac";"05.01.1999";"ooff";"";"e / unübliche Buchstaben, nicht in windows-1252"
+"?? ??? ???";"";"";"DE14100100100000000106";"MARKDEF1100";"Lastschrift";"0,06";"SEPA-LAS";"";"";"F";"DE67SEG00000074132";"Test3-other";"06.01.1999";"ooff";"";"f / unübliche Zeichen, nur in Unicode"

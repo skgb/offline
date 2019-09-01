@@ -1,0 +1,18 @@
+Loading mandate store: test/unicode/mandates-utf8-bom.csv
+updated: 1999-01-01
+error: null
+hashMissing: false
+hashMatches: true
+hashBase64 (calculated): foKea46vfn7cPTp+ULJfkA==
+mandates.size: 6
+mandates: { Test3-Text Test3-Chars Test3-8bit Test3-win Test3-mac Test3-other }
+
+Loading mandate store: test/unicode/mandates-utf8-nobom.csv
+updated: 1999-01-01
+error: null
+hashMissing: false
+hashMatches: true
+hashBase64 (calculated): foKea46vfn7cPTp+ULJfkA==
+mandates.size: 6
+mandates: { Test3-Text Test3-Chars Test3-8bit Test3-win Test3-mac Test3-other }
+

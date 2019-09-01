@@ -1,0 +1,7 @@
+﻿UMR;Signed;IBAN;SWIFT-BIC;Holder;"updated 1999-01-01 foKea46vfn7cPTp+ULJfkA=="
+Test3-Text;"1999-01-01";"DE66100000000000000101";"MARKDEF1100";"TEST Åsa Schröder";"simpler Fließtext"
+Test3-Chars;"1999-01-02";"DE95000000000000000102";"MARKDEF1100";"ÄÖÜäöüß";"übliche Buchstaben"
+Test3-8bit;"1999-01-03";"DE68000000000000000103";"MARKDEF1100";"ÆØÅæøå ÿ ªº µ";"unübliche Buchstaben, voll 8-bit-kompatibel"
+Test3-win;"1999-01-04";"DE82100000000000000104";"MARKDEF1100";"Ýý þÐÞð";"unübliche Buchstaben, nicht in macintosh"
+Test3-mac;"1999-01-05";"DE55100000000000000105";"MARKDEF1100";"ı Ÿ ﬁﬂ ∂∑π∏";"unübliche Buchstaben, nicht in windows-1252"
+Test3-other;"1999-01-06";"DE14100100100000000106";"MARKDEF1100";"Ĳĳ ⛵️🛶 ṢK㎇";"unübliche Zeichen, nur in Unicode"

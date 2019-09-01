@@ -105,9 +105,13 @@
 			<arg value="test/dindate"/>
 			<arg value="build/test"/>
 		</java>
+		<java classname="test.Unicode" classpath="build/classes" fork="true">
+			<arg value="test/unicode"/>
+			<arg value="build/test"/>
+		</java>
 		
 	</target>
-	<target name="testcheck" depends="testcheck-backend1, testcheck-dindate" /><!-- call this directly to test Windows results manually after copying those results into build/test -->
+	<target name="testcheck" depends="testcheck-backend1, testcheck-dindate, testcheck-unicode" /><!-- call this directly to test Windows results manually after copying those results into build/test -->
 	
 	<target name="testcheck-backend1">
 		
@@ -175,6 +179,40 @@
 		
 		<fail if="Log_test_failed"/>
 		<fail if="Debit_output_test_failed"/>
+	</target>
+	
+	<target name="testcheck-unicode">
+		
+		<exec dir="." executable="diff" searchpath="true" output="build/test/unicode.log.diff">
+			<arg line="-u"/>
+			<arg file="test/unicode/good-log.txt"/>
+			<arg file="build/test/test3.log.txt"/>
+		</exec>
+		<exec dir="build/test" executable="find" searchpath="true">
+			<arg line="unicode.log.diff"/>
+			<arg line="-empty"/>
+			<arg line="-type"/>
+			<arg line="f"/>
+			<arg line="-delete"/>
+		</exec>
+		<available property="Log_test_failed" file="build/test/unicode.log.diff"/>
+		
+		<exec dir="." executable="diff" searchpath="true" output="build/test/unicode.out.diff">
+			<arg line="-u"/>
+			<arg file="test/unicode/good-out-latin1.csv"/>
+			<arg file="build/test/test3-latin1.out.csv"/>
+		</exec>
+		<exec dir="build/test" executable="find" searchpath="true">
+			<arg line="unicode.out.diff"/>
+			<arg line="-empty"/>
+			<arg line="-type"/>
+			<arg line="f"/>
+			<arg line="-delete"/>
+		</exec>
+		<available property="Unicode_output_test_failed" file="build/test/unicode.out.diff"/>
+		
+		<fail if="Log_test_failed"/>
+		<fail if="Unicode_output_test_failed"/>
 	</target>
 	
 	
