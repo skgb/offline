@@ -83,7 +83,9 @@
 	
 	
 	<target name="run" depends="package">
-		<java jar="build/SKGB-offline.jar" fork="true"/>
+		<java jar="build/SKGB-offline.jar" fork="true">
+			<arg value="dev"/>
+		</java>
 	</target>
 	
 	

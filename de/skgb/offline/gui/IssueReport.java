@@ -92,6 +92,9 @@ class IssueReport implements Runnable {
 	
 	
 	public void run () {
+		if (gui.development) {
+			return;
+		}
 		remoteReportSend();
 	}
 	

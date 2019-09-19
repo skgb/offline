@@ -39,6 +39,8 @@ class Gui implements ActionListener, Thread.UncaughtExceptionHandler {
 	
 	CsvFileDialog fileDialog;
 	
+	boolean development = false;  // used to disable certain features during development
+	
 	
 	Gui () {
 		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "SKGB-offline");  // shouldn't be necessary in Java 1.7+
@@ -169,7 +171,11 @@ class Gui implements ActionListener, Thread.UncaughtExceptionHandler {
 	
 	
 	public static void main (final String[] args) {
-		new Gui();
+		Gui gui = new Gui();
+		
+		if (args != null && args.length > 0 && "dev".equals(args[0])) {
+			gui.development = true;
+		}
 	}
 	
 }

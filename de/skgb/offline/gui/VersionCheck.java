@@ -42,11 +42,11 @@ class VersionCheck implements Runnable {
 			// TODO: more obvious report if the last successful check was a long time ago
 			return;
 		}
-		if (! currentVersion.equals(gui.app.version)) {
-			SwingUtilities.invokeLater( new VersionMismatchDialog(gui.app.version, currentVersion) );
+		System.out.println("SKGB-offline: latest stable version is " + currentVersion + " (this is " + gui.app.version + ")");
+		if (currentVersion.equals(gui.app.version) || gui.development) {
 			return;
 		}
-		System.out.println("SKGB-offline " + currentVersion + " is the latest version");
+		SwingUtilities.invokeLater( new VersionMismatchDialog(gui.app.version, currentVersion) );
 	}
 	
 	
