@@ -18,8 +18,12 @@ public class Unicode {
 		final File mandateFile = new File(inPath + "/mandates-utf8-bom.csv");
 		final File debitInFile = new File(inPath + "/debit-latin1.csv");
 		final File debitOutFile = new File(outPath + "/test3-latin1.out.csv");
-		
 		new SkgbOfflineProcessor( new SkgbOffline(mandateFile) ).in(debitInFile).out(debitOutFile);
+		
+		final File mandateFile2 = new File(inPath + "/mandates-utf8-nobom.csv");
+		final File debitInFile2 = new File(inPath + "/debit-utf8-nobom.csv");
+		final File debitOutFile2 = new File(outPath + "/test3b-latin1.out.csv");
+		new SkgbOffline(mandateFile2).process(debitInFile2, debitOutFile2);
 		
 		writer.close();
 	}

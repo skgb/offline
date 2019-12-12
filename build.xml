@@ -213,8 +213,23 @@
 		</exec>
 		<available property="Unicode_output_test_failed" file="build/test/unicode.out.diff"/>
 		
+		<exec dir="." executable="diff" searchpath="true" output="build/test/unicode2.out.diff">
+			<arg line="-u"/>
+			<arg file="test/unicode/good-out-latin1.csv"/>
+			<arg file="build/test/test3b-latin1.out.csv"/>
+		</exec>
+		<exec dir="build/test" executable="find" searchpath="true">
+			<arg line="unicode2.out.diff"/>
+			<arg line="-empty"/>
+			<arg line="-type"/>
+			<arg line="f"/>
+			<arg line="-delete"/>
+		</exec>
+		<available property="Unicode_output_test_b_failed" file="build/test/unicode2.out.diff"/>
+		
 		<fail if="Log_test_failed"/>
 		<fail if="Unicode_output_test_failed"/>
+		<fail if="Unicode_output_test_b_failed"/>
 	</target>
 	
 	

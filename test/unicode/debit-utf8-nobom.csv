@@ -1,0 +1,7 @@
+"Empfängername";"Kontonummer";"Bankleitzahl";"IBAN";"BIC";"Verwendungszweck";"Betrag";"Auftragsart";"Textschlüssel";"TSErgänzung";"Kundenreferenz";"GläubigerID";"MandatsID";"Mandatsdatum";"Mandatstyp";"Ausführungsdatum";"Kommentar"
+;;;;;"Lastschrift";"0,01";"SEPA-LAS";;;"A";;"Test3-Text";;"frst";;"a"
+;;;;;"Lastschrift";"0,02";"SEPA-LAS";;;"B";;"Test3-Chars";;"rcur";;"b"
+;;;;;"Lastschrift";"0,03";"SEPA-LAS";;;"C";;"Test3-8bit";;"fnal";;"c"
+;;;;;"Lastschrift";"0,04";"SEPA-LAS";;;"D";;"Test3-win";;"ooff";;"d"
+;;;;;"Lastschrift";"0,05";"SEPA-LAS";;;"E";;"Test3-mac";;"ooff";;"e"
+;;;;;"Lastschrift";"0,06";"SEPA-LAS";;;"F";;"Test3-other";;"ooff";;"f"
