@@ -1,4 +1,9 @@
-﻿- properties speicherort: falls nicht existent, lokaler pfad im selben ordner
+Diese Software wird seit April 2021 nicht mehr unterstützt.
+Es existiert kein Zeitplan für eine Fortführung der Entwicklung.
+
+TODO:
+- properties speicherort: falls nicht existent, lokaler pfad im selben ordner
+- Java-version prüfen (ziel: versuchen, wesentlich veraltete versionen zu verhindern)
 - about-box (evtl. über klick auf stander auch in windows?)
 - doku
 - MandateStore-konstruktor überarbieten, insb. parsen der signature

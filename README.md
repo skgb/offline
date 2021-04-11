@@ -1,7 +1,21 @@
 SKGB-offline
 ============
 
-Der verschlüsselte Austausch von Kontodaten übers Netz hat sich als durchführbar, aber aufwändig und teils kompliziert erwiesen. Daher bereitet [SKGB-intern](http://intern1.skgb.de) die Lastschriftlisten (Sammelaufträge) nur mit allen anderen nötigen Angaben vor (alles bis auf die Kontodaten). Anschließend müssen offline auf dem eigenen Rechner die Kontodaten aus der Sammlung der SEPA-Mandate herausgesucht und eingefügt werden. Es läuft also auf einen simplen `JOIN` der folgenden zwei Tabellen hinaus:
+Diese Software wird seit April 2021 nicht mehr unterstützt.
+Es existiert kein Zeitplan für eine Fortführung der Entwicklung.
+
+
+Beschreibung
+------------
+
+Der verschlüsselte Austausch von Kontodaten übers Netz mit
+Off-the-Shelf–Software wie GPG hat sich als durchführbar, aber aufwändig
+und teils kompliziert erwiesen. Daher bereitet
+[SKGB-intern](https://intern.skgb.de) die Lastschriftlisten (Sammelaufträge)
+nur mit allen anderen nötigen Angaben vor (alles bis auf die Kontodaten).
+Anschließend müssen offline auf dem eigenen Rechner die Kontodaten aus der
+Sammlung der SEPA-Mandate herausgesucht und eingefügt werden. Es läuft also
+auf einen simplen `JOIN` der folgenden zwei Tabellen hinaus:
 
 - **Lastschriftliste** (ohne Kontodaten, aber mit allen Beträgen etc. und mit der Mandatsreferenz)
 - **Mandatssammlung** (Kontodaten, sortiert nach Mandatsreferenz)
@@ -35,12 +49,6 @@ Licensed under the Apache License, Version 2.0
 Classic Javadoc StyleSheet 1.2  
 Copyright (C) 2015 S.Ishigaki  
 Licensed under the MIT license
-
-
-Beitragen
----------
-
-Wir freuen uns über alle Beiträge! Eröffne einfach ein Issue oder einen Pull Request oder wende dich auf andere Weise an den IT-Ausschuss.
 
 
 Weitere Informationen
